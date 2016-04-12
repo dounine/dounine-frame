@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.rbac.PermissionTypeMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="permissionType" id="permissionTypeMap">
+		<id property="permissionTypeId" column="permissionId" />
+		<result property="permissionTypeName" column="permissionTypeName" />
+		<result property="createTime" column="createTime" />
+		<result property="permissionTypeDescription" column="permissionTypeDescription" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_rbac_permission_type`
+	</sql>
+
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		permissionTypeId,createTime,permissionTypeName,permissionTypeDescription,status
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="permissionTypeId != null">
+				and permissionTypeId = #{permissionTypeId}
+			</if>
+			<if test="permissionTypeName != null and permissionTypeName != ''">
+				and permissionTypeName like concat(concat('%',
+				'${permissionTypeName}'), '%')
+			</if>
+			<if test="permissionTypeDescription != null">
+				and permissionTypeDescription =
+				#{permissionTypeDescription}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="permissionTypeMap" parameterType="permissionType">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		`dounine_admin_rbac_permission_type`
+		<include refid="Example_Where_Clause" />
+		ORDER BY createTime desc
+		limit #{offSet},#{rows}
+	</select>
+
+	<insert id="insert" parameterType="permissionType"
+		useGeneratedKeys="true" keyProperty="permissionTypeId">
+		INSERT INTO
+		`dounine_admin_rbac_permission_type`(`permissionTypeName`,`permissionTypeDescription`,`status`,`createTime`)
+		VALUES(#{permissionTypeName},#{permissionTypeDescription},#{status},#{createTime})
+	</insert>
+
+	<update id="update" parameterType="permissionType">
+		UPDATE `dounine_admin_rbac_permission_type` SET
+		<trim suffixOverrides=",">
+			<if test="permissionTypeName != null  and permissionTypeName != '' ">
+				permissionTypeName = #{permissionTypeName},
+			</if>
+			<if test="permissionTypeDescription != null">
+				permissionTypeDescription = #{permissionTypeDescription},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+		</trim>
+		WHERE `permissionTypeId`=#{permissionTypeId}
+	</update>
+
+	<select id="count" resultType="int" parameterType="permissionType">
+		SELECT
+		count(permissionTypeId) FROM
+		`dounine_admin_rbac_permission_type`
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<delete id="delete" parameterType="permissionType">
+		delete from
+		<include refid="table_name" />
+		where permissionTypeId = #{permissionTypeId}
+	</delete>
+
+	<update id="congeal" parameterType="permissionType">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`permissionTypeId`=#{permissionTypeId}
+	</update>
+
+	<update id="thaw" parameterType="permissionType">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`permissionTypeId`=#{permissionTypeId}
+	</update>
+
+</mapper>

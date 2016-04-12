@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.rbac.LoginMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="login" id="loginMap">
+		<id property="loginId" column="loginId" />
+		<result property="userId" column="userId" />
+		<result property="userName" column="userName" />
+		<result property="loginIp" column="loginIp" />
+		<result property="loginTime" column="loginTime" />
+		<result property="area" column="area" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_rbac_login`
+	</sql>
+	
+	<sql id="order_by">
+		<choose>
+			<when test="sort!=null and sort!='' and order!=null and order!=''">
+				<choose>
+					<when test="sort=='loginTimeT' or sort=='loginTimeC'">
+						order by me.loginTime ${order}
+					</when>
+					<otherwise>
+						order by me.${sort} ${order}
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				order by me.loginTime desc
+			</otherwise>
+		</choose>
+	</sql>
+
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		loginId,userId,loginIp,loginTime,area
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="loginId != null">
+				AND loginId = #{loginId}
+			</if>
+			<if test="userId != null">
+				AND me.userId = #{userId}
+			</if>
+			<if test="userName != null and userName!=''">
+				AND u.userName like CONCAT('%',#{userName},'%')
+			</if>
+			<if test="loginIp != null and loginIp!=''">
+				AND loginIp = #{loginIp}
+			</if>
+			<if test="loginTime != null">
+				AND loginTime like CONCAT('',#{loginTimeD},'%')
+			</if>
+			<if test="area != null and area!=''">
+				AND area like CONCAT('%',#{area},'%')
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="loginMap" parameterType="login">
+		SELECT
+		me.*,u.userName as userName
+		FROM
+		`dounine_admin_rbac_login` AS me INNER JOIN `dounine_admin_rbac_user` AS u ON me.userId =
+		u.userId
+		<include refid="Example_Where_Clause" />
+		<include refid="order_by"/>
+		limit #{offSet},#{rows}
+	</select>
+	
+	<select id="getLastLogin" resultType="login" parameterType="user">
+		SELECT
+		me.loginTime,me.area 
+		FROM
+		`dounine_admin_rbac_login` AS me INNER JOIN `dounine_admin_rbac_user` AS u ON me.userId =
+		u.userId where u.userId = (select userId from `dounine_admin_rbac_user` where userName=#{userName})
+		order by me.loginTime desc
+		limit 1,1
+	</select>
+
+	<insert id="insert" parameterType="login" useGeneratedKeys="true"
+		keyProperty="permissionTypeId">
+		INSERT INTO
+		`dounine_admin_rbac_login`(`userId`,`loginIp`,`loginTime`,`area`)
+		VALUES(#{userId},#{loginIp},#{loginTime},#{area})
+	</insert>
+
+	<select id="count" resultType="long" parameterType="login">
+		SELECT
+		count(1) FROM
+		`dounine_admin_rbac_login` AS me INNER JOIN `dounine_admin_rbac_user` AS u ON me.userId =
+		u.userId
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<delete id="delete" parameterType="login">
+		delete from
+		<include refid="table_name" />
+		where loginId = #{loginId}
+	</delete>
+
+</mapper>

@@ -1,0 +1,28 @@
+.dounine-tabs-content{
+	border:1px solid #D4D4D5;
+	padding: 4px;
+}
+.dounine-tabs-title{
+	height: 40px;
+	line-height: 40px;
+	color: #FFFFFF;
+}
+.dounine-tabs-title a{
+	outline:none;
+	blr:expression(this.onFocus=this.blur());
+	color: #666666;
+	text-decoration: none;
+	float: left;
+	padding: 0 20px;
+	border-radius: 5px 5px 0px 0px;
+	vertical-align: middle;
+	display: block;
+	position: relative;
+}
+.dounine-tabs-title .dtt-select{
+	border: 1px solid #D4D4D5;
+	background: #FFFFFF;
+	border-bottom: 1px solid #FFFFFF;
+	font-weight: 700;
+	color:black;
+}

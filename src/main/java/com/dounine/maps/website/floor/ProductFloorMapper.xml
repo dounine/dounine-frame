@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.website.floor.ProductFloorMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="productFloor" id="productFloorMap">
+		<id property="floor_id" column="floor_id" />
+		<result property="floor_name" column="floor_name" />
+		<result property="floor_cell_width" column="floor_cell_width" />
+		<result property="floor_cell_height" column="floor_cell_height" />
+		<result property="floor_column_count" column="floor_column_count" />
+		<result property="floor_row_count" column="floor_row_count" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_website_floor`
+	</sql>
+
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		me.floor_id,me.floor_name,me.createTime,me.status,me.sequence,me.floor_cell_width,
+		me.floor_cell_height,me.floor_column_count,me.floor_row_count
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="floor_id != null">
+				and me.floor_id = #{floor_id}
+			</if>
+			<if test="floor_name != null and floor_name != ''">
+				and me.floor_name like concat(concat('%',
+				'${floor_name}'), '%')
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="productFloorMap" parameterType="productFloor">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="table_name"/> as me
+		<include refid="Example_Where_Clause" />
+		ORDER BY me.createTime desc
+		limit #{offSet},#{rows}
+	</select>
+
+	<insert id="insert" parameterType="productFloor"
+		useGeneratedKeys="true" keyProperty="floor_id">
+		INSERT INTO
+		<include refid="table_name"/>(`floor_name`,`floor_cell_width`,`sequence`,`createTime`,`floor_cell_height`,`status`,`floor_column_count`,`floor_row_count`)
+		VALUES(#{floor_name},#{floor_cell_width},#{sequence},#{createTime},#{floor_cell_height},#{status},#{floor_column_count},#{floor_row_count})
+	</insert>
+
+	<update id="update" parameterType="productFloor">
+		UPDATE <include refid="table_name"/> SET
+		<trim suffixOverrides=",">
+			<if test="floor_name != null  and floor_name != '' ">
+				floor_name = #{floor_name},
+			</if>
+			<if test="floor_cell_width != null">
+				floor_cell_width = #{floor_cell_width},
+			</if>
+			<if test="sequence != null">
+				sequence = #{sequence},
+			</if>
+			<if test="floor_cell_height != null">
+				floor_cell_height = #{floor_cell_height},
+			</if>
+			<if test="floor_column_count != null">
+				floor_column_count = #{floor_column_count},
+			</if>
+			<if test="floor_row_count != null">
+				floor_row_count = #{floor_row_count},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+		</trim>
+		WHERE `floor_id`=#{floor_id}
+	</update>
+
+	<select id="count" resultType="int" parameterType="productFloor">
+		SELECT
+		count(1) FROM
+		<include refid="table_name"/>
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<delete id="delete" parameterType="productFloor">
+		delete from
+		<include refid="table_name" />
+		where `floor_id` = #{floor_id}
+	</delete>
+	
+	<update id="congeal" parameterType="productFloor">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`floor_id`=#{floor_id}
+	</update>
+
+	<update id="thaw" parameterType="productFloor">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`floor_id`=#{floor_id}
+	</update>
+	
+	<select id="find" resultType="productFloor" parameterType="productFloor">
+		SELECT
+		*
+		FROM
+		<include refid="table_name" /> as me
+		<include refid="Example_Where_Clause" />
+	</select>
+
+</mapper>

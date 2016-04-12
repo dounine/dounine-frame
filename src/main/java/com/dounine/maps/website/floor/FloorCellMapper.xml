@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.website.floor.FloorCellMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="floorCell" id="floorCellMap">
+		<id property="cell_id" column="cell_id" />
+		<result property="cell_picture" column="cell_picture" />
+		<result property="cell_column_index" column="cell_column_index" />
+		<result property="cell_row_index" column="cell_row_index " />
+		<result property="cell_column_count" column="cell_column_count " />
+		<result property="cell_row_count" column="cell_row_count " />
+		<result property="cell_url" column="cell_url " />
+		<result property="cell_vertical" column="cell_vertical " />
+		<result property="cell_text" column="cell_text " />
+		<result property="cell_css_style" column="cell_css_style " />
+		<result property="cell_picture_or_color" column="cell_picture_or_color " />
+		<result property="cell_bg_color" column="cell_bg_color " />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_website_floor_cell`
+	</sql>
+
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		me.cell_id,me.cell_url,me.createTime,me.status,me.cell_picture,
+		me.cell_column_index,me.cell_row_index,me.cell_column_count,me.cell_row_count,
+		me.cell_vertical,me.cell_text,me.cell_css_style,me.cell_picture_or_color,me.cell_bg_color
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="cell_id != null">
+				and me.cell_id = #{cell_id}
+			</if>
+			<if test="productFloor != null">
+				and me.floorId = #{productFloor.floor_id}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="floorCellMap" parameterType="floorCell">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="table_name"/> as me
+		<include refid="Example_Where_Clause" />
+		ORDER BY me.createTime desc
+		limit #{offSet},#{rows}
+	</select>
+
+	<insert id="insert" parameterType="floorCell"
+		useGeneratedKeys="true" keyProperty="cell_id">
+		INSERT INTO
+		<include refid="table_name"/>(`cell_bg_color`,`cell_picture_or_color`,`cell_url`,`cell_picture`,`createTime`,`cell_vertical`,`status`,`cell_text`,`cell_css_style`,`cell_column_index`,`cell_row_index`,`cell_column_count`,`cell_row_count`,`floorId`)
+		VALUES(#{cell_bg_color},#{cell_picture_or_color},#{cell_url},#{cell_picture},#{createTime},#{cell_vertical},#{status},#{cell_text},#{cell_css_style},#{cell_column_index},#{cell_row_index},#{cell_column_count},#{cell_row_count},#{productFloor.floor_id})
+	</insert>
+
+	<update id="update" parameterType="floorCell">
+		UPDATE <include refid="table_name"/> SET
+		<trim suffixOverrides=",">
+			<if test="cell_picture != null">
+				cell_picture = #{cell_picture},
+			</if>
+			<if test="cell_bg_color != null">
+				cell_bg_color = #{cell_bg_color},
+			</if>
+			<if test="cell_picture_or_color != null">
+				cell_picture_or_color = #{cell_picture_or_color},
+			</if>
+			<if test="cell_vertical != null">
+				cell_vertical = #{cell_vertical},
+			</if>
+			<if test="cell_column_index != null">
+				cell_column_index = #{cell_column_index},
+			</if>
+			<if test="cell_row_index != null">
+				cell_row_index = #{cell_row_index},
+			</if>
+			<if test="cell_column_count != null">
+				cell_column_count = #{cell_column_count},
+			</if>
+			<if test="cell_row_count != null">
+				cell_row_count = #{cell_row_count},
+			</if>
+			<if test="cell_url != null">
+				cell_url = #{cell_url},
+			</if>
+			<if test="cell_text != null">
+				cell_text = #{cell_text},
+			</if>
+			<if test="cell_css_style != null">
+				cell_css_style = #{cell_css_style},
+			</if>
+		</trim>
+		WHERE `cell_id`=#{cell_id}
+	</update>
+
+	<select id="count" resultType="int" parameterType="floorCell">
+		SELECT
+		count(1) FROM
+		<include refid="table_name"/> as me
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<delete id="delete" parameterType="floorCell">
+		delete from
+		<include refid="table_name" />
+		where 1=1 
+		<if test="cell_id!=null">
+			and cell_id = #{cell_id}
+		</if>
+		<if test="productFloor!=null and productFloor.floor_id!=null">
+			and floorId = #{productFloor.floor_id}
+		</if>
+	</delete>
+	
+	<update id="congeal" parameterType="floorCell">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`cell_id`=#{cell_id}
+	</update>
+
+	<update id="thaw" parameterType="floorCell">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`cell_id`=#{cell_id}
+	</update>
+
+</mapper>

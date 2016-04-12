@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.bug.BugMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="bug" id="bugMap">
+		<id property="bugId" column="bugId" />
+		<result property="bugName" column="bugName" />
+		<result property="bugContent" column="bugContent" />
+		<result property="user.userName" column="_userName" />
+		<result property="user.userId" column="_userId" />
+		<result property="bugType.bugTypeId" column="_bugTypeId" />
+		<result property="bugType.bugTypeName" column="_bugTypeName" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_system_bug`
+	</sql>
+	
+	<sql id="order_by">
+		<choose>
+			<when test="sort!=null and sort!='' and order!=null and order!=''">
+				<choose>
+					<when test="sort=='createTimeT' or sort=='createTimeC'">
+						order by me.createTime ${order}
+					</when>
+					<otherwise>
+						order by me.${sort} ${order}
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				order by me.createTime desc
+			</otherwise>
+		</choose>
+	</sql>
+
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		bugId,bugName,bugContent,createTime,status
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="bugId != null">
+				AND bugId = #{bugId}
+			</if>
+			<if test="bugName != null and bugName != ''">
+				AND bugName like CONCAT('',#{bugName},'%')
+			</if>
+			<if test="user != null">
+				AND userId = #{user.userId}
+			</if>
+			<if test="createTime != null">
+				AND createTime = #{createTime}
+			</if>
+			<if test="bugType != null">
+				AND bugTypeId = #{bugType.bugTypeId}
+			</if>
+			<if test="status != null">
+				AND me.status = #{status}
+			</if>
+		</trim>
+	</sql>
+
+	<update id="update" parameterType="bug">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		<trim suffixOverrides=",">
+			<if test="bugName!=null and bugName!=''">
+				bugName = #{bugName},
+			</if>
+			<if test="bugContent!=null">
+				bugContent = #{bugContent},
+			</if>
+			<if test="bugType!=null">
+				bugTypeId = #{bugType.bugTypeId},
+			</if>
+			<if test="status!=null">
+				status = #{status},
+			</if>
+		</trim>
+		WHERE `bugId`=#{bugId}
+	</update>
+
+	<select id="select" resultMap="bugMap" parameterType="bug">
+		SELECT
+		me.*,u.userName as _userName,u.userId as _userId,t.bugTypeId as
+		_bugTypeId,t.bugTypeName as _bugTypeName
+		FROM
+		<include refid="table_name" />
+		as me INNER JOIN `dounine_admin_rbac_user` as u ON me.userId =
+		u.userId
+		INNER JOIN `dounine_admin_system_bug_type` as t ON me.bugTypeId =
+		t.bugTypeId
+		<include refid="Example_Where_Clause" />
+		<include refid="order_by"/>
+		limit #{offSet},#{rows}
+	</select>
+
+	<select id="find" resultType="bug" parameterType="bug">
+		SELECT
+		bugContent
+		FROM
+		<include refid="table_name" /> as me
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<insert id="insert" parameterType="bug" useGeneratedKeys="true"
+		keyProperty="bugId">
+		INSERT INTO
+		<include refid="table_name" />
+		(`bugId`,`bugName`,`bugContent`,`userId`,`status`,`bugTypeId`,`createTime`)
+		VALUES(#{bugId},#{bugName},#{bugContent},#{user.userId},#{status},#{bugType.bugTypeId},#{createTime})
+	</insert>
+
+	<select id="count" resultType="long" parameterType="bug">
+		SELECT
+		count(1) FROM
+		<include refid="table_name" /> as me
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<delete id="delete" parameterType="bug">
+		delete from
+		<include refid="table_name" /> as me
+		where bugId = #{bugId}
+	</delete>
+
+	<update id="congeal" parameterType="bug">
+		UPDATE
+		<include refid="table_name" /> as me
+		SET
+		status = #{status}
+		WHERE
+		`bugId`=#{bugId}
+	</update>
+
+	<update id="thaw" parameterType="bug">
+		UPDATE
+		<include refid="table_name" /> as me
+		SET
+		status = #{status}
+		WHERE
+		`bugId`=#{bugId}
+	</update>
+
+</mapper>

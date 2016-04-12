@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+	updateCheck="false">
+	
+	<defaultCache
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="120"
+            overflowToDisk="false"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="120"
+            />
+            
+            
+    <cache name="SimplePageCachingFilter"  
+           maxElementsInMemory="10000"  
+           maxElementsOnDisk="1000"  
+           eternal="false"  
+           overflowToDisk="true"  
+           timeToIdleSeconds="1000"  
+           timeToLiveSeconds="1000"  
+           memoryStoreEvictionPolicy="LFU"  
+            />
+
+	<!-- service 缓存配置 -->
+	<cache name="serviceCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+		
+	<!-- 角色缓存配置 -->
+	<cache name="roleCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+		
+	<!-- 部门缓存配置 -->
+	<cache name="departmentCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+		
+	<!-- 权限缓存配置 -->
+	<cache name="permissionCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+		
+	<!-- 权限类型缓存配置 -->
+	<cache name="permissionTypeCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+		
+	<!-- 用户角色缓存配置 -->
+	<cache name="userRoleCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+		
+	<!-- 角色权限缓存配置 -->
+	<cache name="rolePermissionCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+		
+	<!-- BUG缓存配置 -->
+	<cache name="bugCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+		
+	<!-- BUG缓存配置 -->
+	<cache name="bugTypeCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+		
+	<!-- 操作缓存配置 -->
+	<cache name="operationCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+		
+	<!-- 登录日志缓存配置 -->
+	<cache name="loginCache" eternal="false" maxElementsInMemory="100"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LRU" />
+
+	<!--用户缓存配置 -->
+	<cache name="userCache" maxElementsInMemory="1000"
+		timeToLiveSeconds="30000" eternal="false" overflowToDisk="false" />
+		
+	<!--文件缓存配置 -->
+	<cache name="fileCache" maxElementsInMemory="1000"
+		timeToLiveSeconds="30000" eternal="false" overflowToDisk="false" />
+		
+	<!--楼层配置 -->
+	<cache name="ProductFloorCache" maxElementsInMemory="1000"
+		timeToLiveSeconds="30000" eternal="false" overflowToDisk="false" />	
+		
+	<!--楼层配置 -->
+	<cache name="ProductFloorCellCache" maxElementsInMemory="1000"
+		timeToLiveSeconds="30000" eternal="false" overflowToDisk="false" />
+		
+</ehcache> 

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.website.ArticleMapper">
+
+	<resultMap type="article" id="articleMap">
+		<id property="id" column="id" />
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<result property="sequence" column="sequence" />
+		<result property="status" column="status" />
+		<result property="alias" column="alias" />
+		<result property="keywords" column="keywords" />
+		<result property="description" column="description" />
+		<result property="articleClass.id" column="articleClass_id" />
+		<result property="articleClass.name" column="articleClass_name" />
+	</resultMap>
+	
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_website_article`
+	</sql>
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		me.id,me.createTime,me.keywords,me.description,me.alias,me.title,me.content,me.status,me.sequence
+	</sql>
+	
+	<sql id="order_by">
+		<choose>
+			<when test="sort!=null and sort!='' and order!=null and order!=''">
+				<choose>
+					<when test="sort=='createTimeT' or sort=='createTimeC'">
+						order by me.createTime ${order}
+					</when>
+					<otherwise>
+						order by me.${sort} ${order}
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				order by me.createTime desc
+			</otherwise>
+		</choose>
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		WHERE 1=1
+		<trim>
+			<if test="id != null">
+				AND id = #{id}
+			</if>
+			<if test="articleClass != null">
+				AND articleClassId = #{articleClass.id}
+			</if>
+			<if test="alias != null and alias!=''">
+				AND alias = alias
+			</if>
+			<if test="title != null and title != ''">
+				AND title like
+				CONCAT('%',#{title},'%')
+			</if>
+			<if test="status != null">
+				AND status = #{status}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="articleMap"
+		parameterType="article">
+		SELECT
+		<include refid="Base_Column_List" />,you.name as articleClass_name,you.id as articleClass_id
+		FROM <include refid="table_name"/> as me INNER JOIN `dounine_admin_website_article_class` as you on me.articleClassId = you.id
+		<include refid="Example_Where_Clause" />
+		order by sequence desc 
+		LIMIT #{offSet},#{rows}
+	</select>
+
+	<select id="count" resultType="int" parameterType="article">
+		SELECT
+		COUNT(1) FROM
+		<include refid="table_name"/>
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<insert id="insert" parameterType="article"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		<include refid="table_name"/>(`title`,`keywords`,`description`,`alias`,`content`,`status`,`createTime`,`sequence`,`articleClassId`)
+		VALUES(#{title},#{keywords},#{description},#{alias},#{content},#{status},#{createTime},#{sequence},#{articleClass.id})
+	</insert>
+
+	<update id="update" parameterType="article">
+		UPDATE <include refid="table_name"/> SET
+		<trim suffixOverrides=",">
+			<if test="title != null  and title != '' ">
+				title = #{title},
+			</if>
+			<if
+				test="content != null">
+				content = #{content},
+			</if>
+			<if test="status != null  ">
+				status = #{status},
+			</if>
+			<if test="keywords != null  and keywords!=''">
+				keywords = #{keywords},
+			</if>
+			<if test="description != null  and description!=''">
+				description = #{description},
+			</if>
+			<if test="alias != null and alias!='' ">
+				alias = #{alias},
+			</if>
+			<if test="sequence != null  ">
+				sequence = #{sequence},
+			</if>
+			<if test="articleClass != null  and articleClass.id!=null">
+				articleClassId = #{articleClass.id},
+			</if>
+		</trim>
+		WHERE `id`=#{id}
+	</update>
+
+	<update id="congeal" parameterType="article">
+		UPDATE
+		<include refid="table_name"/> SET
+		status = #{status}
+		WHERE
+		`id`=#{id}
+	</update>
+	<update id="thaw" parameterType="article">
+		UPDATE
+		<include refid="table_name"/> SET
+		status = #{status}
+		WHERE
+		`id`=#{id}
+	</update>
+
+	<delete id="delete" parameterType="article">
+		DELETE FROM
+		<include refid="table_name"/> where `id`=#{id}
+	</delete>
+	
+	<select id="find" resultType="article" parameterType="article">
+		SELECT
+		id,title,alias,content
+		FROM
+		<include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+	</select>
+
+</mapper>

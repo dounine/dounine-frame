@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.product.ProductNavMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="productNav" id="productNavMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="createTime" column="createTime" />
+		<result property="parent.id" column="productNavParentId" />
+		<result property="parent.name" column="productNavParentName" />
+		<result property="description" column="description" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_product_nav`
+	</sql>
+
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		me.id,me.name,me.sequence,me.description,me.createTime,me.status
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="id != null">
+				and me.id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				and me.name like concat(concat('%',
+				'${name}'), '%')
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="productNavMap" parameterType="productNav">
+		SELECT
+		<include refid="Base_Column_List" />,me.productNavParentId as productNavParentId,you.name as productNavParentName
+		FROM
+		<include refid="table_name"/> as me LEFT JOIN <include refid="table_name"/> as you ON me.productNavParentId = you.id
+		<include refid="Example_Where_Clause" />
+		ORDER BY me.sequence desc
+		limit #{offSet},#{rows}
+	</select>
+	
+	<select id="findRelationMyself" resultMap="productNavMap" parameterType="productNav">
+		SELECT
+		me.*,you.name as productNavParentName
+		FROM
+		<include refid="table_name"/> as me LEFT JOIN <include refid="table_name"/> as you ON me.productNavParentId = you.id
+		WHERE me.productNavParentId = #{id} 
+		ORDER BY me.sequence desc
+	</select>
+
+	<insert id="insert" parameterType="productNav"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		<include refid="table_name"/>(`name`,`description`,`createTime`,`sequence`,`productNavParentId`,`status`)
+		VALUES(#{name},#{description},#{createTime},#{sequence},#{parent.id},#{status})
+	</insert>
+
+	<update id="update" parameterType="productNav">
+		UPDATE <include refid="table_name"/> as me SET
+		<trim suffixOverrides=",">
+			<if test="name != null  and name != '' ">
+				me.name = #{name},
+			</if>
+			<if test="sequence != null">
+				sequence = #{sequence},
+			</if>
+			<if test="parent != null and parent.id!=null">
+				productNavParentId = #{parent.id},
+			</if>
+			<if test="description != null">
+				description = #{description},
+			</if>
+		</trim>
+		WHERE `id`=#{id}
+	</update>
+
+	<select id="count" resultType="int" parameterType="productNav">
+		SELECT
+		count(1) FROM
+		<include refid="table_name"/> as me
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<delete id="delete" parameterType="productNav">
+		delete from
+		<include refid="table_name" />
+		where `id` = #{id}
+	</delete>
+	
+	<select id="all" resultMap="productNavMap">
+		SELECT
+		*
+		FROM
+		<include refid="table_name"/>
+		where productNavParentId IS NULL 
+		ORDER BY sequence desc
+	</select>
+	
+	<select id="list" resultMap="productNavMap">
+		SELECT
+		*
+		FROM
+		<include refid="table_name"/>
+		ORDER BY sequence desc
+	</select>
+	
+	<update id="congeal" parameterType="productNav">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`id`=#{id}
+	</update>
+
+	<update id="thaw" parameterType="productNav">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`id`=#{id}
+	</update>
+	
+	<select id="find" resultType="productNav" parameterType="productNav">
+		SELECT
+		me.id,me.name,you.id as productNavParentId,you.name as productNavParentName
+		FROM
+		<include refid="table_name" /> as me LEFT JOIN <include refid="table_name" /> as you ON me.productNavParentId = you.id
+		<include refid="Example_Where_Clause" />
+	</select>
+
+</mapper>

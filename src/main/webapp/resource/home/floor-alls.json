@@ -1,0 +1,24 @@
+[
+	{
+		"offSet": 0,
+		"page": 0,
+		"rows": 10,
+		"sort": null,
+		"order": null,
+		"status": "CONGEAL",
+		"createTime": 1424794105000,
+		"sequence": 0,
+		"ids": null,
+		"floor_id": 19,
+		"floor_name": "45633",
+		"floor_cell_width": 100,
+		"floor_cell_height": 34,
+		"floor_column_count": 8,
+		"floor_row_count": 11,
+		"floorCells": null,
+		"createTimeT": "2015-02-25 00:08:25",
+		"createTimeD": "2015-02-25",
+		"unwrappingSerializer": false,
+		"delegatee": null
+	}
+]

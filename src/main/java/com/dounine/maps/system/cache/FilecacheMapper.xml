@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.cache.FilecacheMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+		
+	<resultMap type="filecache" id="filecacheMap">
+		<id property="fileCacheId" column="fileCacheId" />
+		<result property="fileCacheName" column="fileCacheName" />
+		<result property="fileCacheResource" column="fileCacheResource" />
+		<result property="fileCacheDescription" column="fileCacheDescription" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_system_filecache`
+	</sql>
+	
+	<sql id="order_by">
+		<choose>
+			<when test="sort!=null and sort!='' and order!=null and order!=''">
+				<choose>
+					<when test="sort=='createTimeT' or sort=='createTimeC'">
+						order by me.createTime ${order}
+					</when>
+					<otherwise>
+						order by me.${sort} ${order}
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				order by me.createTime desc
+			</otherwise>
+		</choose>
+	</sql>
+
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		fileCacheId,createTime,fileCacheName,fileCacheResource,fileCacheDescription,status
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="fileCacheId != null">
+				and fileCacheId = #{fileCacheId}
+			</if>
+			<if test="fileCacheName != null and fileCacheName != ''">
+				and fileCacheName like concat(concat('%','${fileCacheName}'), '%')
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="filecacheMap" parameterType="filecache">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="table_name" /> as me
+		<include refid="Example_Where_Clause" />
+		<include refid="order_by"/>
+		limit #{offSet},#{rows}
+	</select>
+
+	<insert id="insert" parameterType="filecache" useGeneratedKeys="true"
+		keyProperty="fileCacheId">
+		INSERT INTO
+		<include refid="table_name" />
+		(`fileCacheName`,`fileCacheResource`,`status`,`fileCacheDescription`,`createTime`)
+		VALUES(#{fileCacheName},#{fileCacheResource},#{status},#{fileCacheDescription},#{createTime})
+	</insert>
+
+	<update id="update" parameterType="filecache">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		<trim suffixOverrides=",">
+			<if test="fileCacheName != null  and fileCacheName != '' ">
+				fileCacheName = #{fileCacheName},
+			</if>
+			<if test="fileCacheResource != null">
+				fileCacheResource = #{fileCacheResource},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+		</trim>
+		WHERE `fileCacheId`=#{fileCacheId}
+	</update>
+
+	<select id="count" resultType="int" parameterType="filecache">
+		SELECT
+		count(1) FROM
+		<include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<delete id="delete" parameterType="filecache">
+		delete from
+		<include refid="table_name" />
+		where fileCacheId = #{fileCacheId}
+	</delete>
+
+	<update id="congeal" parameterType="filecache">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`fileCacheId`=#{fileCacheId}
+	</update>
+
+	<update id="thaw" parameterType="filecache">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`fileCacheId`=#{fileCacheId}
+	</update>
+
+</mapper>

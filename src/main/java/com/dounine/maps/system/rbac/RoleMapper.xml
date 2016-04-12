@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.rbac.RoleMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="role" id="roleMap">
+		<id property="roleId" column="roleId" />
+		<result property="roleName" column="roleName" />
+		<result property="roleDescription" column="roleDescription" />
+		<result property="status" column="status" />
+		<result property="roleParent.roleId" column="roleParent_roleId" />
+		<result property="roleParent.roleName" column="roleParent_roleName" />
+		<result property="state" column="tree_state" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_rbac_role`
+	</sql>
+
+	<sql id="tree_where">
+		<trim suffixOverrides=",">
+			WHERE 1 = 1
+			<choose>
+				<when test="ids != null">
+					AND p.roleId IN (ids)
+				</when>
+				<otherwise>
+					<choose>
+						<!-- 查询根下 -->
+						<when test="roleId == null">
+							AND p.roleParentId = 1
+						</when>
+						<!-- 查询当前下 -->
+						<otherwise>
+							AND p.roleParentId = #{roleId}
+						</otherwise>
+					</choose>
+				</otherwise>
+			</choose>
+		</trim>
+	</sql>
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		a.roleId,a.createTime,b.roleId as
+		roleParent_roleId,b.roleName as
+		roleParent_roleName,a.roleName,a.roleDescription,a.status
+	</sql>
+
+	<!-- 查询表中的数据有没有与自己相关联 -->
+	<sql id="has_me_data">
+		SELECT children.roleId FROM (select * FROM
+		<include refid="table_name" />
+		) children,
+		<include refid="table_name" />
+		AS cc WHERE children.roleId = cc.roleParentId group by
+		children.roleId
+	</sql>
+
+	<!-- 查询父级 -->
+	<sql id="select_parent">
+		LEFT JOIN
+		<include refid="table_name" />
+		AS nn ON nn.roleId = p.roleParentId
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		WHERE 1=1
+		<trim suffixOverrides=",">
+			<choose>
+				<when test="roleId == null">
+					AND b.roleId = 1
+				</when>
+				<otherwise>
+					AND b.roleId = #{roleId}
+				</otherwise>
+			</choose>
+			<if test="roleName != null and roleName != ''">
+				AND a.roleName like
+				CONCAT('%',#{roleName},'%')
+			</if>
+			<if test="roleDescription != null">
+				AND a.roleDescription = #{roleDescription}
+			</if>
+			<if test="status != null">
+				AND a.status = #{status}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="roleMap" parameterType="role">
+		SELECT
+		p.*,ii.roleId as state,nn.roleName as
+		roleParent_roleName,nn.roleId as
+		roleParent_roleId
+		FROM
+		<include refid="table_name" />
+		AS p LEFT JOIN (
+		<include refid="has_me_data" />
+		) AS ii on ii.roleId = p.roleId
+		<include refid="select_parent" />
+		<include refid="tree_where" />
+	</select>
+
+	<insert id="insert" parameterType="role" useGeneratedKeys="true"
+		keyProperty="roleId">
+		INSERT INTO
+		<include refid="table_name" />
+		(`roleName`,`roleDescription`,`status`,`roleParentId`,`createTime`)
+		VALUES(#{roleName},#{roleDescription},#{status},
+		<choose>
+			<when test="null!=roleParent">#{roleParent.roleId}</when>
+			<otherwise>1</otherwise>
+		</choose>
+		,#{createTime})
+	</insert>
+
+	<update id="update" parameterType="role">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		<trim suffixOverrides=",">
+			<if test="roleName != null  and roleName != '' ">
+				roleName = #{roleName},
+			</if>
+			<if test="roleDescription != null">
+				roleDescription = #{roleDescription},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="roleParent != null">
+				roleParentId = #{roleParent.roleId},
+			</if>
+		</trim>
+		WHERE `roleId`=#{roleId}
+	</update>
+
+	<select id="findByUser" resultType="role" parameterType="user">
+		select roleName,roleId,status from dounine_admin_rbac_role where
+		roleId in
+		(select roleId from dounine_admin_rbac_user_role where userId
+		= (
+		select userId from dounine_admin_rbac_user where 1 = 1
+		<if test=" userId!=null ">
+			AND userId = #{userId}
+		</if>
+		<if test=" userName!=null and userName!=''">
+			AND userName = #{userName}
+		</if>
+		)) and status = 0
+	</select>
+
+	<delete id="delete" parameterType="role">
+		DELETE FROM
+		<include refid="table_name" />
+		WHERE roleId = #{roleId}
+	</delete>
+
+	<select id="count" resultType="int" parameterType="role">
+		SELECT
+		COUNT(roleId)
+		FROM
+		<include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<select id="find" resultMap="roleMap" parameterType="role">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="table_name" />
+		AS a LEFT JOIN
+		<include refid="table_name" />
+		AS b ON a.roleParentId = b.roleId
+		<if test="roleId!=null">
+			WHERE a.roleId = #{roleId}
+		</if>
+	</select>
+
+	<update id="congeal" parameterType="role">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`roleId`=#{roleId}
+	</update>
+
+	<update id="thaw" parameterType="role">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`roleId`=#{roleId}
+	</update>
+
+</mapper>

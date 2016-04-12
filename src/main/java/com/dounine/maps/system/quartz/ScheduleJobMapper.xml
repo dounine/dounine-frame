@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.quartz.ScheduleJobMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="scheduleJob" id="scheduleJobMap">
+		<id property="scheduleJobId" column="scheduleJobId" />
+		<result property="scheduleJobName" column="scheduleJobName" />
+		<result property="status" column="status" />
+		<result property="scheduleJobMethod" column="scheduleJobMethod" />
+		<result property="scheduleJobClass" column="scheduleJobClass" />
+		<result property="scheduleJobDescription" column="scheduleJobDescription" />
+		<result property="scheduleJobCronExpression" column="scheduleJobCronExpression" />
+		<result property="scheduleJobGroup.scheduleJobGroupId" column="scheduleJobGroup_id" />
+		<result property="scheduleJobGroup.scheduleJobGroupName"
+			column="scheduleJobGroup_name" />
+		<result property="scheduleJobGroup.status" column="scheduleJobGroup_status" />
+	</resultMap>
+	
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_quartz_schedulejob`
+	</sql>
+	
+	<sql id="order_by">
+		<choose>
+			<when test="sort!=null and sort!='' and order!=null and order!=''">
+				<choose>
+					<when test="sort=='createTimeT' or sort=='createTimeC'">
+						order by me.createTime ${order}
+					</when>
+					<otherwise>
+						order by me.${sort} ${order}
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				order by me.createTime desc
+			</otherwise>
+		</choose>
+	</sql>
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		me.scheduleJobGroupId,me.createTime,me.status,g.scheduleJobGroupId as
+		scheduleJobGroup_id,g.status as
+		scheduleJobGroup_status,g.scheduleJobGroupName as
+		scheduleJobGroup_name,scheduleJobId,scheduleJobName,scheduleJobMethod,scheduleJobClass,scheduleJobDescription,scheduleJobCronExpression
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		WHERE 1=1
+		<trim suffixOverrides=",">
+			<if test="scheduleJobId != null">
+				AND scheduleJobId = #{scheduleJobId}
+			</if>
+			<if test="scheduleJobName != null and scheduleJobName != ''">
+				AND scheduleJobName like
+				CONCAT('%',#{scheduleJobName},'%')
+			</if>
+			<if test="scheduleJobMethod != null and scheduleJobMethod != ''">
+				AND scheduleJobMethod like
+				CONCAT('%',#{scheduleJobMethod},'%')
+			</if>
+			<if test="scheduleJobClass != null and scheduleJobClass != ''">
+				AND scheduleJobClass like
+				CONCAT('%',#{scheduleJobClass},'%')
+			</if>
+			<if test="scheduleJobDescription != null and scheduleJobDescription != ''">
+				AND scheduleJobDescription like
+				CONCAT('%',#{scheduleJobDescription},'%')
+			</if>
+			<if
+				test="scheduleJobCronExpression != null and scheduleJobCronExpression != ''">
+				AND scheduleJobCronExpression like
+				CONCAT('%',#{scheduleJobCronExpression},'%')
+			</if>
+			<if test="status != null">
+				AND me.status = #{status}
+			</if>
+			<if test="scheduleJobGroup != null">
+				AND me.scheduleJobGroupId =
+				#{scheduleJobGroup.scheduleJobGroupId}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="scheduleJobMap" parameterType="scheduleJob">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM <include refid="table_name"/> as me INNER JOIN
+		`dounine_admin_quartz_schedulejob_group` g ON me.scheduleJobGroupId =
+		g.scheduleJobGroupId
+		<include refid="Example_Where_Clause" />
+		<include refid="order_by"/>
+		limit #{offSet},#{rows}
+	</select>
+
+	<select id="count" resultType="int" parameterType="scheduleJob">
+		SELECT
+		COUNT(scheduleJobId) FROM
+		<include refid="table_name"/> as me
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<insert id="insert" parameterType="scheduleJob"
+		useGeneratedKeys="true" keyProperty="scheduleJobId">
+		INSERT INTO
+		<include refid="table_name"/>(`scheduleJobName`,`scheduleJobGroupId`,`status`,`scheduleJobDescription`,`scheduleJobCronExpression`,`scheduleJobClass`,`scheduleJobMethod`,`createTime`)
+		VALUES(#{scheduleJobName},#{scheduleJobGroup.scheduleJobGroupId},#{status},#{scheduleJobDescription},#{scheduleJobCronExpression},#{scheduleJobClass},#{scheduleJobMethod},#{createTime})
+	</insert>
+
+	<update id="update" parameterType="scheduleJob">
+		UPDATE <include refid="table_name"/> SET
+		<trim suffixOverrides=",">
+			<if test="scheduleJobName != null  and scheduleJobName != '' ">
+				scheduleJobName = #{scheduleJobName},
+			</if>
+			<if test="scheduleJobGroup != null">
+				scheduleJobGroupId =
+				#{scheduleJobGroup.scheduleJobGroupId},
+			</if>
+			<if test="status != null  ">
+				status = #{status},
+			</if>
+			<if test="scheduleJobDescription != null  ">
+				scheduleJobDescription = #{scheduleJobDescription},
+			</if>
+			<if test="scheduleJobClass != null  ">
+				scheduleJobClass = #{scheduleJobClass},
+			</if>
+			<if test="scheduleJobMethod != null  ">
+				scheduleJobMethod = #{scheduleJobMethod},
+			</if>
+			<if test="scheduleJobCronExpression != null  ">
+				scheduleJobCronExpression = #{scheduleJobCronExpression},
+			</if>
+		</trim>
+		WHERE `scheduleJobId`=#{scheduleJobId}
+	</update>
+
+	<delete id="delete" parameterType="scheduleJob">
+		DELETE FROM
+		<include refid="table_name"/> WHERE scheduleJobId =
+		#{scheduleJobId}
+	</delete>
+
+	<update id="congeal" parameterType="scheduleJob">
+		UPDATE
+		<include refid="table_name"/> SET
+		status = #{status}
+		WHERE
+		`scheduleJobId`=#{scheduleJobId}
+	</update>
+	<update id="thaw" parameterType="scheduleJob">
+		UPDATE
+		<include refid="table_name"/> SET
+		status = #{status}
+		WHERE
+		`scheduleJobId`=#{scheduleJobId}
+	</update>
+
+</mapper>

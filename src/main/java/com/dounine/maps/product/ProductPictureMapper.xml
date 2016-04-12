@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.product.ProductPictureMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="productPicture" id="productPictureMap">
+		<id property="id" column="id" />
+		<result property="smallPath" column="smallPath" />
+		<result property="middlePath" column="middlePath" />
+		<result property="originalPath" column="originalPath" />
+		<result property="name" column="name" />
+		<result property="product.id" column="product_id" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_product_picture`
+	</sql>
+
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		me.id,smallPath,middlePath,originalPath,me.sequence,me.createTime,me.name
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="id != null">
+				and me.id = #{id}
+			</if>
+			<if test="product != null and product.id!=null">
+				and productId = #{product.id}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="productPictureMap" parameterType="productPicture">
+		SELECT
+		<include refid="Base_Column_List" />,you.id as product_id
+		FROM
+		<include refid="table_name"/> as me INNER JOIN `dounine_admin_product` as you ON me.productId = you.id
+		<include refid="Example_Where_Clause" />
+		ORDER BY me.createTime desc
+		limit #{offSet},#{rows}
+	</select>
+
+	<insert id="insert" parameterType="productPicture"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		<include refid="table_name"/>(`productId`,`smallPath`,`middlePath`,`originalPath`,`sequence`,`createTime`,`name`)
+		VALUES(#{product.id},#{smallPath},#{middlePath},#{originalPath},#{sequence},#{createTime},#{name})
+	</insert>
+
+	<update id="update" parameterType="productPicture">
+		UPDATE <include refid="table_name"/> SET
+		<trim suffixOverrides=",">
+			<if test="smallPath != null  and smallPath != '' ">
+				smallPath = #{smallPath},
+			</if>
+			<if test="middlePath != null  and middlePath != '' ">
+				middlePath = #{middlePath},
+			</if>
+			<if test="originalPath != null  and originalPath != '' ">
+				originalPath = #{originalPath},
+			</if>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="product != null and product.id!=null">
+				productId = #{product.id},
+			</if>
+		</trim>
+		WHERE `id`=#{id}
+	</update>
+
+	<select id="count" resultType="int" parameterType="productPicture">
+		SELECT
+		count(1) FROM
+		<include refid="table_name"/> as me
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<delete id="delete" parameterType="productPicture">
+		delete from
+		<include refid="table_name" />
+		where `id` = #{id}
+	</delete>
+
+</mapper>

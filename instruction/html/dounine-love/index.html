@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="css/floor.css"/>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+		<script src="js/jquery-1.11.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery.corner.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/dounine-tools.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div class="nav">
+			<div class="nav-bar">
+				<li><a href="#">Index <i class="iconfont">&#xf029d;</i></a></li>
+				<li><a href="#">Story <i class="iconfont">&#xe60e;</i></a></li>
+				<li><a href="#">About <i class="iconfont">&#xe634;</i></a></li>
+				<li style="border: none;"><a href="#">Help <i class="iconfont">&#xe648;</i></a></li>
+			</div>
+			<div class="opacity-txt">
+				she is for you dounine e.
+			</div>
+		</div>
+		
+		<div class="pointed">
+			<div class="arrow-rectangle">
+				<i class="iconfont one">&#xe67a;</i>
+			</div>
+			
+			<div class="center-center">
+				<i class="iconfont one">&#x3444;</i>
+				<i class="iconfont second">&#xe601;</i>
+			</div>
+			
+			<div class="left-top pointed-circle">
+				<i class="iconfont one">&#x3444;</i>
+				<i class="iconfont second">&#xf00ae;</i>
+			</div>
+			<div class="right-top pointed-circle">
+				<i class="iconfont one" style="color: #8DCD9B;">&#x3444;</i>
+				<i class="iconfont second">&#xe604;</i>
+			</div>
+			<div class="right-bottom pointed-circle">
+				<i class="iconfont one" style="color: #8DCD9B;">&#x3444;</i>
+				<i class="iconfont second">&#xe60b;</i>
+			</div>
+			<div class="left-bottom pointed-circle">
+				<i class="iconfont one">&#x3444;</i>
+				<i class="iconfont second">&#xf0046;</i>
+			</div>
+			<div class="left-left pointed-circle">
+				<i class="iconfont one">&#x3444;</i>
+				<i class="iconfont second">&#x343f;</i>
+			</div>
+			<div class="right-right pointed-circle">
+				<i class="iconfont one" style="color: #8DCD9B;">&#x3444;</i>
+				<i class="iconfont second">&#xe645;</i>
+			</div>
+			
+			<div class="p-point">
+				<div style="left:94px;top:186px;width: 6px;"></div>
+				<div style="left:106px;top:186px;"></div>
+				<div style="left:122px;top:186px;"></div>
+				<div style="left:140px;top:186px;"></div>
+				<div style="left:328px;top:186px;"></div>
+				<div style="left:344px;top:186px;"></div>
+				<div style="left:360px;top:186px;"></div>
+				<div style="left:360px;top:186px;"></div>
+				<div style="left:376px;top:186px;width: 6px;"></div>
+				
+				<div style="left:168px;top:88px;width: 6px;"></div>
+				<div style="left:174px;top:97px;width: 6px;"></div>
+				<div style="left:180px;top:106px;width: 6px;"></div>
+				<div style="left:188px;top:115px;width: 6px;"></div>
+				
+				<div style="left:290px;top:115px;width: 6px;"></div>
+				<div style="left:298px;top:106px;width: 6px;"></div>
+				<div style="left:306px;top:99px;width: 6px;"></div>
+				<div style="left:314px;top:90px;width: 6px;"></div>
+				
+				<div style="left:170px;top:294px;width: 6px;"></div>
+				<div style="left:178px;top:284px;width: 6px;"></div>
+				<div style="left:186px;top:276px;width: 6px;"></div>
+				<div style="left:194px;top:268px;width: 6px;"></div>
+				
+				<div style="left:280px;top:268px;width: 6px;"></div>
+				<div style="left:286px;top:276px;width: 6px;"></div>
+				<div style="left:293px;top:284px;width: 6px;"></div>
+				<div style="left:300px;top:292px;width: 6px;"></div>
+				
+			</div>
+		</div>
+		
+		<div id="product-floor">
+			<div class="floors"></div>
+		</div>
+		
+		<div class="footer">
+			<div class="footer-t-b">
+				
+			</div>
+			<div class="footer-content">
+				<div class="footer-left">
+					&copy; 2015. All Rights Reserved.
+				</div>
+				<div class="footer-right">
+					<a href="#">逗你呢</a>
+					<a href="#">招贤纳士</a>
+					<a href="#">关于逗你</a>
+					<a href="#">服务协议</a>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+	<script type="text/javascript">
+		$(function(){
+			$('.pointed-circle').css('opacity',0.95);
+			$('.arrow-left,.arrow-rectangle,.arrow-right').css('opacity',0.8);
+		});
+	</script>
+	<script>
+		var floor_all_action = 'floor-alls.json';
+		
+		var floor_cell_all_action = 'floor-cell.json';
+	
+		var $floors = null,$floors_list=null,$floor_cell_width=100,$floor_cell_height=100,$floor_init_row=3,$floor_init_cell=10,$floor_click_cells=[],$floor_click_index=null,$floor_cell_operator_div_width=0,$floor_cell_operator_div_height=0,border_weight=20,border_height=10;
+		
+		var content_html = '<div class="floor-list"><div class="floor-content-values" style="left:%{floor-content-values-left}px;"></div><div class="floor-column"><ul><li style="width:%{floor-cell-width}px;display:none;"></li></ul></div><div class="floor-row"><ul></ul></div><div class="floor-content" ><ul style="top:0px;height:%{floor-content-ul-height}px;"></ul></div></div>';
+		
+		var floor_button_status = 'create';
+		
+		$floors = $("div.floors");
+		
+		$(function(){
+			inits_floors();
+		});
+		
+		function inits_floors(){
+			$('div.floors').empty();
+			$.get(floor_all_action,function(data){
+				var list = data;
+				for(var ii in list){
+					var $item = list[ii];
+					
+					var _data = content_html.format({
+						"floor-cell-width":$item.floor_cell_width,
+						"floor-content-values-left":$item.floor_cell_width,
+						"floor-content-ul-height":$item.floor_cell_height
+					});
+					
+					var $floor = $(_data).appendTo($floors);
+					var $ul = $floor.find('div.floor-column ul');
+					var $ul_lis = $ul.find('li');
+					var $content = $floor.find('div.floor-content');
+					var $content_title = $floor.find('div.floor-row');
+					for(var j =1;j<=$item.floor_row_count;j++){
+						$('<li>'+j+'</li>').appendTo($content_title.find('ul'));//添加行序号
+						if(j<$item.floor_row_count){//此处判断是为了减少多增的一行
+							var cont = ['<ul style="top:'+(($item.floor_cell_height*j)+j*border_height)+'px;">'];
+							cont.push('</ul>');
+							$(cont.join('')).appendTo($content);
+						}
+					}
+					for(var i =1;i<=$item.floor_column_count;i++){
+						$('<li>'+$ul.find('li').length+'</li>').appendTo($ul);//添加列序号
+						if($item.floor_row_count>0){
+							$content.find('ul').each(function(){
+								$('<li onclick="floor_cell_click(this);" style="left:'+(($item.floor_cell_width*(i-1))+(i-1)*border_weight)+'px;width:'+$item.floor_cell_width+'px;height:'+$item.floor_cell_height+'px;"></li>').appendTo($(this));//创建单元格
+							});
+						}
+					}
+					
+					/*初始化楼层的高度*/
+					var row_count = $floor.find('div.floor-row li');
+					var column_count = $floor.find('div.floor-column li');
+					$floor.height(row_count.length*parseInt($item.floor_cell_height)+row_count.length*border_height);
+					
+					$floor.find('div.floor-content').width((column_count.length-1)*parseInt($item.floor_cell_width)+(column_count.length-2)*border_weight);
+					$floor.find('div.floor-content').height(row_count.length*parseInt($item.floor_cell_height)+(row_count.length-1)*border_height);
+					
+					$('#product-floor').width((column_count.length-1)*parseInt($item.floor_cell_width)+(column_count.length-2)*border_weight);
+					$('#product-floor').height(row_count.length*parseInt($item.floor_cell_height)+(row_count.length-1)*border_height);
+					
+					$.ajax({url:floor_cell_all_action,async:false,method:'get',data:{'productFloor.floor_id':$item.floor_id},success:function(data){
+						for(var ii in data){
+							var oo_b = data[ii];
+							var $add_div = $('<div style="background:#E8E8E8;width:'+($item.floor_cell_width*oo_b.cell_column_count+(oo_b.cell_column_count-1)*border_weight)+'px;height:'+($item.floor_cell_height*oo_b.cell_row_count+(oo_b.cell_row_count-1)*border_height)+'px;position: absolute;left:'+(($item.floor_cell_width*(oo_b.cell_column_index-1))+oo_b.cell_column_index*border_weight)+'px;top:'+($item.floor_cell_height*(oo_b.cell_row_index-1)+(oo_b.cell_row_index-1)*border_height)+'px;"></div>').appendTo($floor.find("div.floor-content-values"));//添加处于顶层数据
+							if(oo_b.picture_or_color){
+								$('<img click="no" onclick="floor_img_click_operator(this);" width="'+($item.floor_cell_width*oo_b.cell_column_count+(oo_b.cell_column_count-1)*border_weight)+'" height="'+($item.floor_cell_height*oo_b.cell_row_count+(oo_b.cell_row_count-1)*border_height)+'" src="'+oo_b.cell_picture+'" />').appendTo($add_div);
+							}else{
+								if(oo_b.vertical){//文字是否竖显示
+									var sArray = oo_b.text.split('');
+									var afterArray = [];
+									for(var s in sArray){
+										afterArray.push(sArray[s]+'<br/>');
+									}
+									$add_div.css({
+										'background-color':oo_b.color,
+										'text-align':'center'
+									}).html(afterArray.join(''));
+								}else{
+									$add_div.css('background-color',oo_b.color).html(oo_b.text);
+								}
+							}
+							if($.trim(oo_b.css_style)!=''){
+								$add_div.attr('style',($add_div.attr('style')+";"+oo_b.css_style));
+							}
+						}
+					}});
+					
+					$floor = null;
+				}
+			});
+		}
+	
+		
+		
+		function get_floor_for_index(){
+			return $('div.floor-list').eq($floor_click_index);
+		}
+		
+	</script>
+</html>

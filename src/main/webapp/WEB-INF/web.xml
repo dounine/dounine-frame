@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+	<display-name>dounine-frame</display-name>
+	
+	<jsp-config>
+        <taglib>
+            <taglib-uri>http://dounine.com/dounine-frame/csrf.tld</taglib-uri>
+            <taglib-location>/WEB-INF/classes/dounine.csrf_guard.tld</taglib-location>
+        </taglib>
+    </jsp-config>
+    
+    <listener>
+		<description>CSRF-跨站点攻击上下文侦听器</description>
+		<listener-class>com.dounine.csrf.listener.DounineCSRFServletContextListener</listener-class>
+	</listener>
+	
+	<listener>
+		<description>CSRF-跨站点攻击会话侦听器</description>
+		<listener-class>com.dounine.csrf.listener.DounineCSRFHttpSessionListener</listener-class>
+	</listener>
+	
+	<filter>
+		<description>CSRF-请求过滤器</description>
+		<filter-name>dounine-csrf</filter-name>
+		<filter-class>com.dounine.csrf.listener.DounineCSRFFilter</filter-class>
+		<init-param>
+			<param-name>chartEncoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>dounine-csrf</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<description>当前request response过滤器</description>
+		<filter-name>contentFilter</filter-name>
+		<filter-class>com.dounine.context.FilterContent</filter-class>
+	</filter>
+	 
+	<filter-mapping>
+		<filter-name>contentFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	 
+	<!-- 碳缓存、gzip压缩核心过滤器 -->
+	<filter>
+	    <filter-name>PageEhCacheFilter</filter-name>
+	    <filter-class>com.dounine.interceptor.PageEhCacheFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>PageEhCacheFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	 
+	 	<!-- 配置Shiro过滤器,先让Shiro过滤系统接收到的请求 -->  
+	<!-- 这里filter-name必须对应applicationContext.xml中定义的<bean id="shiroFilter"/> -->  
+	<!-- 使用[/*]匹配所有请求,保证所有的可控请求都经过Shiro的过滤 -->  
+	<!-- 通常会将此filter-mapping放置到最前面(即其他filter-mapping前面),以保证它是过滤器链中第一个起作用的 -->  
+	<filter>
+		<filter-name>shiroFilter</filter-name>
+		<filter-class>
+			org.springframework.web.filter.DelegatingFilterProxy
+		</filter-class>
+		<init-param>
+			<param-name>targetFilterLifecycle</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/admin/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- 添加对spring的支持 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext-base.xml</param-value>
+	</context-param>
+	
+	<!-- 添加springMVC前端控制器 -->
+	<servlet>
+		<servlet-name>springMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:springmvc-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<url-pattern>*.html</url-pattern>
+		<url-pattern>*.action</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+	       <servlet-name>InitialServlet</servlet-name>
+	       <servlet-class>com.dounine.interceptor.MyApplication</servlet-class>
+	       <load-on-startup>3</load-on-startup>
+	   </servlet>
+	
+	<!-- 添加UTF-8编码支持 -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<servlet-name>springMVC</servlet-name>
+	</filter-mapping>
+	
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	
+</web-app>

@@ -1,0 +1,189 @@
+#product-floor {
+	height: 500px;
+	margin: auto;
+	font-size: 14px;
+}
+.floor-list {
+	margin-top: 36px;
+	float: left;
+	width: 100%;
+	position: relative;
+}
+.floor-column {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	float: left;
+	height: 20px;
+}
+.floor-column ul {
+	position: relative;
+}
+.floor-column li {
+	height: 29px;
+	line-height: 29px;
+	text-align: center;
+	float: left;
+	background: #9cf;
+	border-right: 1px solid #FFFFFF;
+	word-wrap: break-word;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+.floor-row {
+	position: absolute;
+	top: 30px;
+	left: 0px;
+}
+.floor-row li {
+	background: #9cf;
+	text-align: center;
+	margin-bottom: 1px;
+}
+.floor-content {
+	position: absolute;
+	top: 30px;
+}
+.floor-content-values{
+	position: absolute;
+	top:30px;
+	z-index: 2;
+}
+.floor-content ul {
+	width: 100%;
+	margin-bottom: 1px;
+	float: left;
+	position: absolute;
+}
+.floor-content li {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	float: left;
+	margin-left: 1px;
+	background: url(../../images/img-point.png);
+	background-color: gray;
+}
+.floor-info .floor-info-title {
+	position: absolute;
+	text-align: center;
+	top: -31px;
+	left: 0px;
+	border-radius: 4px 4px 0 0;
+	min-width: 100px;
+	padding:0 10px;
+	height: 30px;
+	line-height: 30px;
+	background: #9cf;
+}
+.floor-info .floor-info-title .floor-locked{
+	cursor:pointer;
+	margin-left: 5px;
+	padding-left:6px;
+	border-left:1px solid white;
+}
+.floor-info .floor-info-title .floor-locked:hover{
+	color: blue;
+}
+.floor-info .floor-info-title a {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.floor-info .floor-info-menu {
+	display: none;
+	position: absolute;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	top: -31px;
+	left: 100px;
+	background: #9cf;
+}
+.floor-info .floor-info-menu ul {
+	width: 100%;
+}
+.floor-info .floor-info-menu li {
+	padding: 0 10px;
+	float: left;
+	border-left: 1px solid #fff;
+}
+.floor-info .floor-info-menu li a {
+	color: white;
+}
+.floor-info .floor-info-menu li a:hover {
+	color: blue;
+}
+.floor-content .floor-click-color {
+	background-color: yellow;
+}
+.floor-click-operator {
+	display: none;
+	border-radius: 2px;
+	position: absolute;
+	background: #FFFFFF;
+	top: 0px;
+	left: 0px;
+	z-index: 1;
+	padding: 2px 4px;
+}
+.floor-click-operator a {
+	color: #555555;
+	font-weight: 700;
+}
+.floor-click-operator a:hover {
+	color: red;
+}
+.floor-img-click-operator {
+	display: none;
+	border-radius: 2px;
+	position: absolute;
+	background: #9cf;
+	top: 30px;
+	left: 100px;
+	z-index: 3;
+	padding: 2px 4px;
+}
+.floor-img-click-operator a {
+	color: yellow;
+	font-weight: 700;
+}
+.floor-img-click-operator a:hover {
+	color: red;
+}
+.floor-row-operator {
+	display: none;
+	border-radius: 2px;
+	position: absolute;
+	background: green;
+	top: 30px;
+	z-index: 3;
+	padding: 2px 4px;
+}
+.floor-row-operator a {
+	color: yellow;
+	font-weight: 700;
+}
+.floor-row-operator a:hover {
+	color: red;
+}
+.floor-not-allowed{
+	position: absolute;
+	top:0px;
+	left:0px;
+	height: 400px;
+	background: red;
+}
+.floor-locked-button{
+	position: absolute;
+	z-index: 10;
+	font-weight: 700;
+	left:20px;
+	top:4px;
+}
+.floor-locked-button a{
+	color: black;
+}
+.floor-locked-button a:hover{
+	color: white;
+}

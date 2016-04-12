@@ -1,0 +1,69 @@
+<div class="floor-list">
+	<div class="floor-info">
+		<div class="floor-info-title">
+			<a href="javascript:void(0);" style="cursor: default;">%{floor_name}</a>
+		</div>
+		<div class="floor-info-menu">
+			<ul>
+				<li><a href="javascript:void(0);" onclick="create_floor_row(this.parentElement.parentElement.parentElement.parentElement.parentElement);">新增一行</a>
+				</li>
+				<li><a href="javascript:void(0);" onclick="create_floor_columns(this.parentElement.parentElement.parentElement.parentElement.parentElement);">新增一列</a>
+				</li>
+				<li><a href="javascript:void(0);" onclick="clean_floor_datas(this);">清空楼层</a>
+				</li>
+				<li><a href="javascript:void(0);" onclick="delete_floor(this);">删除楼层</a>
+				</li>
+				<li><a href="javascript:void(0);" onclick="edit_floor(this);">修改楼层</a>
+				</li>
+			</ul>
+		</div>
+		<div class="floor-info-form" style="display: none;">
+			<form onsubmit="return false">
+				<input type="hidden" name="floor_id" />
+				<input type="hidden" name="floor_name" />
+				<input type="hidden" name="status" />
+				<input type="hidden" name="sequence" />
+				<input type="hidden" name="floor_cell_width" />
+				<input type="hidden" name="floor_cell_height" />
+				<input type="hidden" name="floor_column_count" />
+				<input type="hidden" name="floor_row_count" />
+			</form>
+		</div>
+	</div>
+	<div class="floor-not-allowed" style="cursor: not-allowed;z-index: 5;" onclick="floor_not_allowed_click(this);">
+		
+	</div>
+	<div class="floor-click-operator">
+		<a href="javascript:void(0);" onclick="floor_click_operator_edit(this);">编辑</a>
+		<a href="javascript:void(0);" onclick="floor_click_operator_cancel(this);">取消</a>
+	</div>
+	<div class="floor-img-click-operator">
+		<a href="javascript:void(0);" onclick="floor_img_edit_operator(this);">编辑</a>
+		<a href="javascript:void(0);" onclick="floor_img_del_operator(this);">删除</a>
+		<a href="javascript:void(0);" onclick="floor_img_cancel_operator(this);">取消</a>
+	</div>
+	<div class="floor-row-operator">
+		<a href="javascript:void(0);" onclick="floor_row_or_col_click(this);">删除</a>
+	</div>
+	<div class="floor-content-values" style="left:%{floor-content-values-left}px;">
+	</div>
+	<div class="floor-locked-button" style="z-index: 10;">
+		<a href="javascript:void(0);" onclick="floor_locked_click(this);" class="floor-locked">点击解锁</a>
+		<input type="hidden" name="floor-locked" id="floor-locked" value="true" />
+	</div>
+	<div class="floor-column">
+		<ul>
+			<li style="width:%{floor-cell-width}px;">
+				
+			</li>
+		</ul>
+	</div>
+	<div class="floor-row">
+		<ul>
+		</ul>
+	</div>
+	<div class="floor-content" style="left:%{floor-content-left}px;">
+		<ul style="top:0px;height:%{floor-content-ul-height}px;">
+		</ul>
+	</div>
+</div>

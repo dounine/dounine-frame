@@ -1,0 +1,248 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+body {
+	min-width: 800px;
+	margin: auto;
+}
+html {
+	background: url(../img/common/bg-split.jpg);
+}
+.nav {
+	width: 100%;
+	height: 140px;
+}
+.nav .nav-bar {
+	float: right;
+	width: 500px;
+	height: 100px;
+	line-height: 100px;
+	margin-left: 4px;
+	position: relative;
+	z-index: 3;
+}
+.nav .nav-bar a {
+	text-decoration: none;
+	color: #555555;
+	font-family: Microsoft YaHei, \5FAE\8F6F\96C5\9ED1, "Hiragino Sans GB", "Hiragino Sans GB W3", SimHei, \9ED1\4F53;
+	font-size: 20px;
+	margin:0 14px;
+}
+.nav .nav-bar .select{
+	color:#438BEF;
+}
+.nav .nav-bar a i {
+	color: #EAEAEA;
+	font-size: 26px;
+}
+.nav .nav-bar a:hover {
+	color: #438BEF;
+}
+.nav .nav-bar li {
+	float: left;
+}
+.pointed {
+	width: 470px;
+	height: 384px;
+	float: left;
+	position: relative;
+	top:30px;
+	left:0px;
+}
+.pointed .arrow-rectangle {
+	position: absolute;
+	left: 70px;
+	top: -60px;
+}
+.pointed .arrow-rectangle .one {
+	color: pink;
+	font-size: 330px;
+}
+.pointed .left-top {
+	position: absolute;
+	top: -48px;
+	left: 80px;
+}
+.pointed .right-top {
+	position: absolute;
+	top: -54px;
+	left: 284px;
+}
+.pointed .right-bottom {
+	position: absolute;
+	top: 254px;
+	left: 280px;
+}
+.pointed .left-bottom {
+	position: absolute;
+	top: 254px;
+	left: 80px;
+}
+.pointed .left-left {
+	position: absolute;
+	top: 100px;
+	left: -8px;
+}
+.pointed .right-right {
+	position: absolute;
+	top: 100px;
+	left: 364px;
+}
+.pointed .center-center {
+	position: absolute;
+	top: 150px;
+	left: 202px;
+}
+.pointed .pointed-circle .one {
+	color: #FEC43E;
+	font-size: 120px;
+	cursor: pointer;
+}
+.pointed .pointed-circle .second {
+	position: absolute;
+	z-index: 200;
+	left: 30px;
+	top: 48px;
+	font-size: 60px;
+	cursor: pointer;
+	color: white;
+}
+.pointed .pointed-circle .second:hover {
+	color: white;
+	font-size: 70px;
+	left: 24px;
+	top: 38px;
+}
+.pointed .center-center .one {
+	font-size: 200px;
+	position: relative;
+	top: -106px;
+	left: -60px;
+	color: #FCD6DE;
+}
+.pointed .center-center .second {
+	position: absolute;
+	font-size: 120px;
+	top: -40px;
+	left: -20px;
+	color: white;
+}
+.p-point div {
+	width: 10px;
+	height: 6px;
+	background: white;
+	position: absolute;
+}
+.p-point div i {
+	color: white;
+}
+.nav-title{
+	height: 36px;
+	border-bottom: 1px solid #E5E5E5;
+	background: #FAFAFA;
+}
+.nav-title .nav-t-center{
+	max-width: 1000px;
+	margin: auto;
+	line-height: 36px;
+}
+.nav-title .nav-t-center li{
+	text-align: center;
+	float: left;
+	padding: 0 20px;
+	border-right: 1px solid #ccc;
+}
+.nav-title .nav-t-center a{
+	font-family: "微软雅黑", "Microsoft Yahei", Arial, Helvetica, sans-serif, "宋体";
+	color: #A5A5A5;
+	font-size: 14px;
+}
+
+.nav-menu-head{
+	max-width: 1000px;
+	margin: auto;
+}
+.nav-logo{
+	height: 100px;
+	float: left;
+}
+.nav-logo .logo{
+	margin-top:20px;
+	width: 140px;
+	height: 60px;
+}
+.banner{
+	height: 440px;
+	background: url(../img/common/banner-bg.png) -1px;
+}
+.banner .banner-center{
+	width: 1000px;
+	margin: auto;
+}
+.banner .banner-text{
+	text-align: right;
+	margin-top:40px;
+	margin-right:40px;
+	width: 480px;
+	float: right;
+	font-family: "微软雅黑", "Microsoft Yahei", Arial, Helvetica, sans-serif, "宋体";
+}
+.banner .banner-box{
+	margin-top:100px;
+	margin-right:18px;
+	float: left;
+	height: 40px;
+	line-height:40px;
+	padding:0 8px;
+	font-size: 20px;
+	color: white;
+	border-bottom:2px solid pink;
+	background: #D9B3CD;
+	cursor: default;
+}
+.split-box{
+	border-top:2px solid #CCCCCC;
+	min-height: 200px;
+	background: url(../img/common/down.png) top center no-repeat;
+}
+.split-box .box-tip{
+	color: #93ABF0;
+	margin-top:30px;
+	height: 20px;
+	font-size: 20px;
+	cursor: default;
+	line-height: 20px;
+	text-align: center;
+	font-weight: 700;
+}
+.split-box .split-b-center{
+	width: 1000px;
+	height: auto;
+	margin: auto;
+}
+.footer-box{
+	border-top:1px solid #DDDDDD;
+}
+.footer{
+	width: 1000px;
+	height: 60px;
+	line-height: 60px;
+	margin: auto;
+}
+.footer .footer-left{
+	float: left;
+	color: #BBBBBB;
+	font-size: 14px;
+}
+.footer .footer-right{
+	float: right;
+	color: #BBBBBB;
+	font-size: 14px;
+}
+.footer .footer-right a{
+	color: #787878;
+	font-size: 14px;
+	font-family: arial,"Microsoft YaHei";
+	padding:0 10px;
+}

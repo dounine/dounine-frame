@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.website.news.NewsMapper">
+
+	<resultMap type="news" id="newsMap">
+		<id property="id" column="id" />
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<result property="sequence" column="sequence" />
+		<result property="status" column="status" />
+		<result property="hits" column="hits" />
+		<result property="keywords" column="keywords" />
+		<result property="description" column="description" />
+		<result property="newsClass.id" column="newsClass_id" />
+		<result property="newsClass.title" column="newsClass_title" />
+	</resultMap>
+	
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_website_news_news`
+	</sql>
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		me.id,me.createTime,me.keywords,me.hits,me.description,me.title,me.content,me.status,me.sequence
+	</sql>
+	
+	<sql id="order_by">
+		<choose>
+			<when test="sort!=null and sort!='' and order!=null and order!=''">
+				<choose>
+					<when test="sort=='createTimeT' or sort=='createTimeC'">
+						order by me.createTime ${order}
+					</when>
+					<otherwise>
+						order by me.${sort} ${order}
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				order by me.createTime desc
+			</otherwise>
+		</choose>
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		WHERE 1=1
+		<trim suffixOverrides=",">
+			<if test="id != null">
+				AND id = #{id}
+			</if>
+			<if test="newsClass != null">
+				AND newsClassId = #{newsClass.id}
+			</if>
+			<if test="title != null and title != ''">
+				AND title like
+				CONCAT('%',#{title},'%')
+			</if>
+			<if test="status != null">
+				AND status = #{status}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="newsMap"
+		parameterType="news">
+		SELECT
+		<include refid="Base_Column_List" />,you.title as newsClass_title,you.id as newsClass_id
+		FROM <include refid="table_name"/> as me INNER JOIN `dounine_admin_website_news_class` as you on me.newsClassId = you.id
+		<include refid="Example_Where_Clause" />
+		order by sequence desc 
+		LIMIT #{offSet},#{rows}
+	</select>
+
+	<select id="count" resultType="int" parameterType="news">
+		SELECT
+		COUNT(1) FROM
+		<include refid="table_name"/>
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<insert id="insert" parameterType="news"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		<include refid="table_name"/>(`title`,`hits`,`keywords`,`description`,`content`,`status`,`createTime`,`sequence`,`newsClassId`)
+		VALUES(#{title},#{hits},#{keywords},#{description},#{content},#{status},#{createTime},#{sequence},#{newsClass.id})
+	</insert>
+
+	<update id="update" parameterType="news">
+		UPDATE <include refid="table_name"/> SET
+		<trim suffixOverrides=",">
+			<if test="title != null  and title != '' ">
+				title = #{title},
+			</if>
+			<if
+				test="content != null">
+				content = #{content},
+			</if>
+			<if test="status != null  ">
+				status = #{status},
+			</if>
+			<if test="hits != null  ">
+				hits = #{hits},
+			</if>
+			<if test="keywords != null  and keywords!=''">
+				keywords = #{keywords},
+			</if>
+			<if test="description != null  and description!=''">
+				description = #{description},
+			</if>
+			<if test="sequence != null  ">
+				sequence = #{sequence},
+			</if>
+			<if test="newsClass != null  and newsClass.id!=null">
+				newsClassId = #{newsClass.id},
+			</if>
+		</trim>
+		WHERE `id`=#{id}
+	</update>
+
+	<update id="congeal" parameterType="news">
+		UPDATE
+		<include refid="table_name"/> SET
+		status = #{status}
+		WHERE
+		`id`=#{id}
+	</update>
+	<update id="thaw" parameterType="news">
+		UPDATE
+		<include refid="table_name"/> SET
+		status = #{status}
+		WHERE
+		`id`=#{id}
+	</update>
+
+	<delete id="delete" parameterType="news">
+		DELETE FROM
+		<include refid="table_name"/> where `id`=#{id}
+	</delete>
+	
+	<select id="find" resultType="news" parameterType="news">
+		SELECT
+		id,title,hits,content
+		FROM
+		<include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+	</select>
+
+</mapper>

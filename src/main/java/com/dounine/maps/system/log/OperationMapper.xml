@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.log.OperationMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="operation" id="operationMap">
+		<id property="id" column="id" />
+		<result property="userId" column="userId" />
+		<result property="story" column="story" />
+		<result property="userName" column="userName" />
+		<result property="afterContent" column="afterContent" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_system_operator`
+	</sql>
+
+	<sql id="order_by">
+		<choose>
+			<when test="sort!=null and sort!='' and order!=null and order!=''">
+				<choose>
+					<when test="sort=='createTimeT' or sort=='createTimeC'">
+						order by me.createTime ${order}
+					</when>
+					<otherwise>
+						order by me.${sort} ${order}
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				order by me.createTime desc
+			</otherwise>
+		</choose>
+	</sql>
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		id,userId,story,createTime,afterContent
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="id != null">
+				AND id = #{id}
+			</if>
+			<if test="userId != null">
+				AND userId = #{userId}
+			</if>
+			<if test="createTime != null">
+				AND createTime like CONCAT('',#{createTimeD},'%')
+			</if>
+			<if test="userName != null and userName!=''">
+				AND u.userName like CONCAT('%',#{userName},'%')
+			</if>
+			<if test="story != null and story!=''">
+				AND story like CONCAT('%',#{story},'%')
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="operationMap" parameterType="operation">
+		SELECT
+		me.*,u.userName as userName
+		FROM
+		<include refid="table_name" />
+		AS me INNER JOIN `dounine_admin_rbac_user` AS u ON me.userId =
+		u.userId
+		<include refid="Example_Where_Clause" />
+		<include refid="order_by"/>
+		limit #{offSet},#{rows}
+	</select>
+
+	<insert id="insert" parameterType="operation" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO
+		<include refid="table_name" />
+		(`userId`,`story`,`createTime`,`afterContent`)
+		VALUES(#{userId},#{story},#{createTime},#{afterContent})
+	</insert>
+
+	<select id="count" resultType="long" parameterType="operation">
+		SELECT
+		count(1) FROM
+		<include refid="table_name" />
+		AS me INNER JOIN `dounine_admin_rbac_user` AS u ON me.userId =
+		u.userId
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<delete id="delete" parameterType="operation">
+		delete from
+		<include refid="table_name" />
+		where id = #{id}
+	</delete>
+
+</mapper>

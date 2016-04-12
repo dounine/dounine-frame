@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.bug.BugTypeMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="bugType" id="bugTypeMap">
+		<id property="bugTypeId" column="bugTypeId" />
+		<result property="bugTypeName" column="bugTypeName" />
+		<result property="bugTypeDescription" column="bugTypeDescription" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_system_bug_type`
+	</sql>
+	
+	<sql id="order_by">
+		<choose>
+			<when test="sort!=null and sort!='' and order!=null and order!=''">
+				<choose>
+					<when test="sort=='createTimeT' or sort=='createTimeC'">
+						order by me.createTime ${order}
+					</when>
+					<otherwise>
+						order by me.${sort} ${order}
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				order by me.createTime desc
+			</otherwise>
+		</choose>
+	</sql>
+
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		bugTypeId,bugTypeName,bugTypeDescription
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="bugTypeId != null">
+				AND bugTypeId = #{bugTypeId}
+			</if>
+			<if test="bugTypeName != null and bugTypeName!=''">
+				AND bugTypeName like CONCAT('',#{bugTypeName},'%')
+			</if>
+		</trim>
+	</sql>
+
+	<insert id="insert" parameterType="bugType" useGeneratedKeys="true"
+		keyProperty="bugTypeId">
+		INSERT INTO
+		<include refid="table_name" />
+		(`bugTypeId`,`bugTypeName`,`bugTypeDescription`,`createTime`)
+		VALUES(#{bugTypeId},#{bugTypeName},#{bugTypeDescription},#{createTime})
+	</insert>
+
+	<delete id="delete" parameterType="bugType">
+		delete from
+		<include refid="table_name" />
+		where bugTypeId = #{bugTypeId}
+	</delete>
+
+	<update id="update" parameterType="bugType">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		<trim suffixOverrides=",">
+			<if test="bugTypeName != null  and bugTypeName != '' ">
+				bugTypeName = #{bugTypeName},
+			</if>
+			<if test="bugTypeDescription != null">
+				bugTypeDescription = #{bugTypeDescription},
+			</if>
+		</trim>
+		WHERE `bugTypeId`=#{bugTypeId}
+	</update>
+
+	<select id="count" resultType="int" parameterType="bugType">
+		SELECT
+		count(1) FROM
+		<include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<select id="select" resultMap="bugTypeMap" parameterType="bugType">
+		SELECT
+		*
+		FROM
+		<include refid="table_name" /> as me
+		<include refid="Example_Where_Clause" />
+		<include refid="order_by"/>
+		limit #{offSet},#{rows}
+	</select>
+
+</mapper>

@@ -1,0 +1,173 @@
+body {
+	min-width: 800px;
+	max-width: 1100px;
+	height: 1200px;
+	margin: auto;
+	padding-top: 20px;
+}
+html {
+	background: url(../img/bg.png);
+}
+.nav {
+	width: 100%;
+	height: 30px;
+}
+.nav .nav-bar {
+	width: 500px;
+	height: 30px;
+	line-height: 30px;
+	border-bottom:2px solid #92CFA0;
+	margin-left: 4px;
+	margin-top:40px;
+	position: relative;
+	z-index: 3;
+}
+.nav .nav-bar a {
+	text-decoration: none;
+	color: #464343;
+	font-size: 16px;
+}
+.nav .nav-bar a i {
+	color: gray;
+	font-size: 26px;
+}
+.nav .nav-bar a:hover {
+	color: #9cf;
+}
+.nav .nav-bar li {
+	color: white;
+	padding: 0 20px;
+	float: left;
+	border-right: 1px solid #92CFA0;
+}
+.opacity-txt {
+	position: absolute;
+	top: 120px;
+	max-width: 1100px;
+	height: 500px;
+	font-size: 160px;
+	font-family: Tahoma, Helvetica;
+	line-height: 100%;
+	text-indent: 46px;
+	color: #F7F7F7;
+}
+.pointed {
+	width: 470px;
+	height: 384px;
+	position: relative;
+	top: 60px;
+	left:460px;
+}
+.pointed .arrow-rectangle {
+	position: absolute;
+	left: 70px;
+	top: -60px;
+}
+.pointed .arrow-rectangle .one {
+	color: pink;
+	font-size: 330px;
+}
+.pointed .left-top {
+	position: absolute;
+	top: -48px;
+	left: 80px;
+}
+.pointed .right-top {
+	position: absolute;
+	top: -48px;
+	left: 280px;
+}
+.pointed .right-bottom {
+	position: absolute;
+	top: 254px;
+	left: 280px;
+}
+.pointed .left-bottom {
+	position: absolute;
+	top: 254px;
+	left: 80px;
+}
+.pointed .left-left {
+	position: absolute;
+	top: 100px;
+	left: -8px;
+}
+.pointed .right-right {
+	position: absolute;
+	top: 100px;
+	left: 364px;
+}
+.pointed .center-center {
+	position: absolute;
+	top: 150px;
+	left: 202px;
+}
+.pointed .pointed-circle .one {
+	color: #FEC43E;
+	font-size: 120px;
+	cursor: pointer;
+}
+.pointed .pointed-circle .second {
+	position: absolute;
+	z-index: 200;
+	left: 30px;
+	top: 48px;
+	font-size: 60px;
+	cursor: pointer;
+	color: white;
+}
+.pointed .pointed-circle .second:hover {
+	color: brown;
+	font-size: 70px;
+	left: 24px;
+	top: 38px;
+}
+.pointed .center-center .one {
+	font-size: 200px;
+	position: relative;
+	top: -106px;
+	left: -60px;
+	color: #FCD6DE;
+}
+.pointed .center-center .second {
+	position: absolute;
+	font-size: 120px;
+	top: -40px;
+	left: -20px;
+	color: #6495ED;
+}
+.p-point div {
+	width: 10px;
+	height: 6px;
+	background: white;
+	position: absolute;
+}
+.p-point div i {
+	color: white;
+}
+.footer{
+	max-width: 1100px;
+	height: 100px;
+}
+.footer .footer-t-b{
+	height: 0;
+	border-top:1px solid #DDDDDD;
+	border-bottom: 1px solid #FFFFFF;
+	margin-bottom: 30px;
+}
+.footer .footer-left{
+	float: left;
+	color: #BBBBBB;
+	font-size: 14px;
+}
+.footer .footer-right{
+	float: right;
+	color: #BBBBBB;
+	font-size: 14px;
+}
+.footer .footer-right a{
+	color: #787878;
+	font-size: 14px;
+	font-family: arial,"Microsoft YaHei";
+	padding:0 10px;
+}

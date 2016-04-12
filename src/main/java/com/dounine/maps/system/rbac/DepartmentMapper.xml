@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.rbac.DepartmentMapper">
+
+	<resultMap type="department" id="departmentMap">
+		<id property="departmentId" column="departmentId" />
+		<result property="departmentName" column="departmentName" />
+		<result property="departmentDescription" column="departmentDescription" />
+		<result property="status" column="status" />
+		<result property="departmentParent.departmentId" column="departmentParent_departmentId" />
+		<result property="departmentParent.departmentName" column="departmentParent_departmentName" />
+		<result property="state" column="tree_state" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_rbac_department`
+	</sql>
+
+	<sql id="tree_where">
+		<trim suffixOverrides=",">
+			WHERE 1 = 1
+			<choose>
+				<when test="ids != null">
+					AND p.departmentId IN (ids)
+				</when>
+				<otherwise>
+					<choose>
+						<!-- 查询根下 -->
+						<when test="departmentId == null">
+							AND p.departmentParentId = 1
+						</when>
+						<!-- 查询当前下 -->
+						<otherwise>
+							AND p.departmentParentId = #{departmentId}
+						</otherwise>
+					</choose>
+				</otherwise>
+			</choose>
+		</trim>
+	</sql>
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		a.departmentId,a.createTime,b.departmentId as
+		departmentParent_departmentId,b.departmentName as
+		departmentParent_departmentName,a.departmentName,a.departmentDescription,a.status
+	</sql>
+
+	<!-- 查询表中的数据有没有与自己相关联 -->
+	<sql id="has_me_data">
+		SELECT children.departmentId FROM (select * FROM
+		<include refid="table_name" />
+		) children,
+		<include refid="table_name" />
+		AS cc WHERE children.departmentId = cc.departmentParentId group by
+		children.departmentId
+	</sql>
+
+	<!-- 查询父级 -->
+	<sql id="select_parent">
+		LEFT JOIN
+		<include refid="table_name" />
+		AS nn ON nn.departmentId = p.departmentParentId
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		WHERE 1=1
+		<trim suffixOverrides=",">
+			<choose>
+				<when test="departmentId == null">
+					AND b.departmentId = 1
+				</when>
+				<otherwise>
+					AND b.departmentId = #{departmentId}
+				</otherwise>
+			</choose>
+			<if test="departmentName != null and departmentName != ''">
+				AND a.departmentName like
+				CONCAT('%',#{departmentName},'%')
+			</if>
+			<if test="departmentDescription != null">
+				AND a.departmentDescription = #{departmentDescription}
+			</if>
+			<if test="status != null">
+				AND a.status = #{status}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="departmentMap" parameterType="department">
+		SELECT
+		p.*,ii.departmentId as state,nn.departmentName as
+		departmentParent_departmentName,nn.departmentId as
+		departmentParent_departmentId
+		FROM
+		<include refid="table_name" />
+		AS p LEFT JOIN (
+		<include refid="has_me_data" />
+		) AS ii on ii.departmentId = p.departmentId
+		<include refid="select_parent" />
+		<include refid="tree_where" />
+	</select>
+
+	<insert id="insert" parameterType="department" useGeneratedKeys="true"
+		keyProperty="departmentId">
+		INSERT INTO
+		<include refid="table_name" />
+		(`departmentName`,`departmentDescription`,`status`,`departmentParentId`,`createTime`)
+		VALUES(#{departmentName},#{departmentDescription},#{status},
+		<choose>
+			<when test="null!=departmentParent">#{departmentParent.departmentId}</when>
+			<otherwise>1</otherwise>
+		</choose>
+		,#{createTime}
+		)
+	</insert>
+
+	<update id="update" parameterType="department">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		<trim suffixOverrides=",">
+			<if test="departmentName != null  and departmentName != '' ">
+				departmentName = #{departmentName},
+			</if>
+			<if test="departmentDescription != null">
+				departmentDescription = #{departmentDescription},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="departmentParent != null">
+				departmentParentId = #{departmentParent.departmentId},
+			</if>
+		</trim>
+		WHERE `departmentId`=#{departmentId}
+	</update>
+
+	<delete id="delete" parameterType="department">
+		DELETE FROM
+		<include refid="table_name" />
+		WHERE departmentId = #{departmentId}
+	</delete>
+
+	<select id="count" resultType="int" parameterType="department">
+		SELECT
+		COUNT(departmentId)
+		FROM
+		<include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<select id="find" resultMap="departmentMap" parameterType="department">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="table_name" />
+		AS a LEFT JOIN
+		<include refid="table_name" />
+		AS b ON a.departmentParentId = b.departmentId
+		<if test="departmentId!=null">
+			WHERE a.departmentId = #{departmentId}
+		</if>
+	</select>
+
+	<update id="congeal" parameterType="department">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`departmentId`=#{departmentId}
+	</update>
+
+	<update id="thaw" parameterType="department">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`departmentId`=#{departmentId}
+	</update>
+
+</mapper>

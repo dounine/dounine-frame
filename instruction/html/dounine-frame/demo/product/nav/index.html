@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="../../../js/jquery-1.11.0.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<style type="text/css">
+		*{
+			margin: 0px;
+			padding: 0px;
+			font-family: "Segoe UI","Lucida Grande",Helvetica,Arial,"Microsoft YaHei",FreeSans,Arimo,"Droid Sans","wenquanyi micro hei","Hiragino Sans GB","Hiragino Sans GB W3",FontAwesome,sans-serif;
+		}
+		li{
+			list-style: none;
+		}
+		#product-nav-box{
+			width: 240px;
+		}
+		.product-nav{
+			padding-top: 20px;
+			border-right: 1px solid #EEEEEE;
+			height: 500px;
+			color: #555;
+			overflow-x: auto;
+		}
+		.product-nav li{
+			margin:4px 0;
+			color: #777777;
+			height: 30px;
+			line-height: 30px;
+			font-size: 14px;
+			cursor: pointer;
+			white-space: nowrap;
+		}
+		.product-nav li a{
+			display: block;
+			color: #777777;
+			text-decoration: none;
+		}
+		.product-nav a:hover{
+			background: #EEEEEE;
+		}
+		.product-nav div{
+			text-indent: 24px;
+			margin-left:20px;
+		}
+		.product-nav .nav-parent{
+			border-left: 4px solid #3BB4F2;
+			text-indent: 10px;
+			padding: 2px 0;
+			font-weight: 700;
+			font-size: 14px;
+		}
+	</style>
+	<script type="text/javascript">
+		
+		var product_nav_obj = null;
+	
+		$(function(){
+			product_nav_obj = $('div.product-nav');
+			$.get('data.json',function(data){
+				var lists = data;
+				if(lists.length>0){//判断有对象
+					for(var index in lists){
+						var obj = lists[index];
+						children_tree_operator(obj);
+						if(obj.productNavs.length>0){
+							for(var _i in obj.productNavs){
+								each_children_tree(obj.productNavs[_i]);
+							}
+						}
+					}
+				}
+			});
+		});
+		
+		function children_tree_operator(obj){
+			if(obj.parent){
+				var curr_par = $("#nav_product_id_"+obj.parent).parent();
+				var curr_ul = null;
+				if(!curr_par.next().is('ul')){
+					curr_ul = $('<ul></ul>').appendTo(curr_par.parent());
+				}else{
+					curr_ul = curr_par.next();
+				}
+				if(obj.productNavs.length>0){
+					$("<div><ul class='nav-parent'><p id='nav_product_id_"+obj.id+"' dounine-options='id:"+obj.id+",parent:"+obj.parent+",displayUrl:"+obj.displayUrl+",description:"+obj.description+"'>"+obj.name+"</p></ul></div>").appendTo(curr_par.parent());
+				}else{
+					$("<li id='nav_product_id_"+obj.id+"'><a href='#'>"+obj.name+"</a></li>").appendTo(curr_ul);
+				}
+			}else{
+				$("<div><ul class='nav-parent'><p id='nav_product_id_"+obj.id+"' dounine-options='id:"+obj.id+",parent:"+obj.parent+",displayUrl:"+obj.displayUrl+",description:"+obj.description+"'>"+obj.name+"</p></ul></div>").appendTo(product_nav_obj);
+			}
+		}
+		
+		function each_children_tree(obj){//循环子节点
+			children_tree_operator(obj);
+			if(obj.productNavs.length>0){
+				for(var _i in obj.productNavs){
+					each_children_tree(obj.productNavs[_i]);
+				}
+			}
+		}
+	</script>
+	<body>
+		<div id="product-nav-box">
+			<div class="product-nav">
+				
+			</div>
+		</div>
+	</body>
+</html>

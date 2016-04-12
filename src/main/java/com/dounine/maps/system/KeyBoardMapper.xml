@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.KeyBoardMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="keyBoard" id="keyBoardMap">
+		<id property="keyBoardId" column="keyBoardId" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="url" column="url" />
+		<result property="picture" column="picture" />
+		<result property="userId" column="userId" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_system_keyboard`
+	</sql>
+
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		keyBoardId,name,createTime,description,url,userId,picture
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="keyBoardId != null">
+				and keyBoardId = #{keyBoardId}
+			</if>
+			<if test="name != null and name != ''">
+				and name like concat(concat('%',
+				'${name}'), '%')
+			</if>
+			<if test="url != null and url!=''">
+				and url = #{url}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="keyBoardMap" parameterType="keyBoard">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="table_name"/>
+		<include refid="Example_Where_Clause" />
+		ORDER BY createTime desc
+		limit #{offSet},#{rows}
+	</select>
+
+	<insert id="insert" parameterType="keyBoard"
+		useGeneratedKeys="true" keyProperty="keyBoardId">
+		INSERT INTO
+		<include refid="table_name"/>(`name`,`description`,`createTime`,`url`,`userId`,`picture`)
+		VALUES(#{name},#{description},#{createTime},#{url},#{userId},#{picture})
+	</insert>
+
+	<update id="update" parameterType="keyBoard">
+		UPDATE <include refid="table_name"/> SET
+		<trim suffixOverrides=",">
+			<if test="name != null  and name != '' ">
+				name = #{name},
+			</if>
+			<if test="description != null">
+				description = #{description},
+			</if>
+			<if test="url != null and url!=''">
+				url = #{url},
+			</if>
+			<if test="picture != null">
+				picture = #{picture},
+			</if>
+		</trim>
+		WHERE `keyBoardId`=#{keyBoardId}
+	</update>
+
+	<select id="count" resultType="int" parameterType="keyBoard">
+		SELECT
+		count(1) FROM
+		<include refid="table_name"/>
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<delete id="delete" parameterType="keyBoard">
+		delete from
+		<include refid="table_name" />
+		where keyBoardId = #{keyBoardId}
+	</delete>
+
+</mapper>

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dounine.mapper.system.rbac.PermissionMapper">
+
+	<cache flushInterval="600000" size="1024"
+		readOnly="true" />
+
+	<resultMap type="permission" id="permissionMap">
+		<id property="permissionId" column="permissionId" />
+		<result property="permissionName" column="permissionName" />
+		<result property="permissionResource" column="permissionResource" />
+		<result property="permissionDescription" column="permissionDescription" />
+		<result property="permissionParent.permissionId" column="permissionParent_permissionId" />
+		<result property="permissionParent.permissionName" column="permissionParent_permissionName" />
+		<result property="permissionType.permissionTypeId" column="permissionTypeId" />
+		<result property="permissionType.permissionTypeName" column="permissionTypeName" />
+		<result property="status" column="status" />
+		<result property="state" column="tree_state" />
+	</resultMap>
+
+	<!-- 表名 -->
+	<sql id="table_name">
+		`dounine_admin_rbac_permission`
+	</sql>
+
+	<sql id="tree_where">
+		<trim suffixOverrides=",">
+			WHERE 1 = 1
+			<choose>
+				<when test="ids != null">
+					AND p.permissionId IN (ids)
+				</when>
+				<otherwise>
+					<choose>
+						<!-- 查询根下 -->
+						<when test="permissionId == null">
+							AND p.permissionParentId = 1
+						</when>
+						<!-- 查询当前下 -->
+						<otherwise>
+							AND p.permissionParentId = #{permissionId}
+						</otherwise>
+					</choose>
+				</otherwise>
+			</choose>
+		</trim>
+	</sql>
+
+	<!-- 表中所有列 -->
+	<sql id="Base_Column_List">
+		tt.permissionTypeId,tt.permissionTypeName,a.permissionId,b.permissionId
+		as
+		permissionParent_permissionId,b.permissionName as
+		permissionParent_permissionName,a.createTime,a.permissionName,a.permissionResource,a.permissionDescription,a.status
+	</sql>
+
+	<!-- 查询父级 -->
+	<sql id="select_parent">
+		LEFT JOIN
+		<include refid="table_name" />
+		AS nn ON nn.permissionId = p.permissionParentId
+	</sql>
+
+	<!-- 查询表中的数据有没有与自己相关联 -->
+	<sql id="has_me_data">
+		SELECT children.permissionId FROM (select * FROM
+		<include refid="table_name" />
+		) children,
+		<include refid="table_name" />
+		AS cc WHERE children.permissionId = cc.permissionParentId group by
+		children.permissionId
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<choose>
+				<when test="permissionId == null">
+					AND b.permissionId = 1
+				</when>
+				<otherwise>
+					AND b.permissionId = #{permissionId}
+				</otherwise>
+			</choose>
+			<if test="permissionId != null">
+				AND a.permissionId = #{permissionId}
+			</if>
+			<if test="permissionName != null and permissionName != ''">
+				AND a.permissionName like concat(concat('%',
+				'${permissionName}'), '%')
+			</if>
+			<if test="permissionResource != null">
+				AND a.permissionResource = #{permissionResource}
+			</if>
+			<if test="permissionDescription != null">
+				AND a.permissionDescription = #{permissionDescription}
+			</if>
+			<if test="status != null">
+				AND a.status = #{status}
+			</if>
+		</trim>
+	</sql>
+
+	<select id="select" resultMap="permissionMap" parameterType="permission">
+		SELECT
+		p.*,tt.permissionTypeId as
+		permissionTypeId,tt.permissionTypeName as
+		permissionTypeName,ii.permissionId as state,nn.permissionName as
+		permissionParent_permissionName,nn.permissionId as
+		permissionParent_permissionId
+		FROM
+		<include refid="table_name" />
+		AS p LEFT JOIN (
+		<include refid="has_me_data" />
+		) AS ii on ii.permissionId = p.permissionId
+		INNER JOIN
+		`dounine_admin_rbac_permission_type` as tt ON tt.permissionTypeId =
+		p.permissionTypeId
+		<include refid="select_parent" />
+		<include refid="tree_where" />
+	</select>
+
+	<insert id="insert" parameterType="permission" useGeneratedKeys="true"
+		keyProperty="permissionId">
+		INSERT INTO
+		<include refid="table_name" />
+		(`permissionName`,`permissionResource`,`permissionDescription`,`createTime`,`status`,`permissionTypeId`,`permissionParentId`)
+		VALUES(#{permissionName},#{permissionResource},#{permissionDescription},#{createTime},#{status},#{permissionType.permissionTypeId},
+		<choose>
+			<when test="null!=permissionParent">#{permissionParent.permissionId}</when>
+			<otherwise>1</otherwise>
+		</choose>
+		)
+	</insert>
+
+	<update id="update" parameterType="permission">
+		UPDATE `dounine_admin_rbac_permission` SET
+		<trim suffixOverrides=",">
+			<if test="permissionName != null  and permissionName != '' ">
+				permissionName = #{permissionName},
+			</if>
+			<if test="permissionResource != null">
+				permissionResource = #{permissionResource},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="permissionParent != null">
+				permissionParentId = #{permissionParent.permissionId},
+			</if>
+			<if test="permissionDescription != null">
+				permissionDescription = #{permissionDescription},
+			</if>
+			<if test="permissionType != null">
+				permissionTypeId = #{permissionType.permissionTypeId},
+			</if>
+		</trim>
+		WHERE `permissionId`=#{permissionId}
+	</update>
+
+	<select id="find" resultMap="permissionMap" parameterType="permission">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="table_name" />
+		AS a LEFT JOIN
+		<include refid="table_name" />
+		AS b ON a.permissionParentId = b.permissionId
+		INNER JOIN
+		`dounine_admin_rbac_permission_type` tt ON tt.permissionTypeId =
+		a.permissionTypeId
+		<if test="permissionId!=null">
+			WHERE a.permissionId = #{permissionId}
+		</if>
+	</select>
+
+	<select id="findByUser" resultType="permission" parameterType="user">
+		select me.permissionId,me.permissionResource,me.status from
+		`dounine_admin_rbac_permission` as me
+		INNER JOIN
+		`dounine_admin_rbac_permission_type` as dp ON me.permissionTypeId =
+		dp.permissionTypeId
+		where permissionId in
+		(select permissionId from
+		`dounine_admin_rbac_role_permission` where
+		roleId in (select ii.roleId
+		from `dounine_admin_rbac_user_role` AS ii INNER JOIN
+		`dounine_admin_rbac_role` as dd ON dd.roleId = ii.roleId where
+		ii.userId =
+		(select userId from `dounine_admin_rbac_user` where 1 = 1
+		<if test="userId!=null">
+			AND userId = #{userId}
+		</if>
+		<if test="userName!=null and userName!=''">
+			AND userName = #{userName}
+		</if>
+		) AND dd.status = 0
+		)
+		)
+		AND dp.status = 0
+		AND me.status = 0
+	</select>
+
+	<select id="findByUserAll" resultMap="permissionMap"
+		parameterType="user">
+		select permissionDescription,permissionName,permissionResource from
+		`dounine_admin_rbac_permission` as me
+		INNER JOIN
+		`dounine_admin_rbac_permission_type` as dp ON me.permissionTypeId =
+		dp.permissionTypeId
+		where permissionId in
+		(select permissionId from
+		`dounine_admin_rbac_role_permission` where
+		roleId in (select ii.roleId
+		from `dounine_admin_rbac_user_role` AS ii INNER JOIN
+		`dounine_admin_rbac_role` as dd ON dd.roleId = ii.roleId where
+		ii.userId =
+		(select userId from `dounine_admin_rbac_user` where 1 = 1
+		<if test="userId!=null">
+			AND userId = #{userId}
+		</if>
+		<if test="userName!=null and userName!=''">
+			AND userName = #{userName}
+		</if>
+		) AND dd.status = 0
+		)
+		)
+		AND dp.status = 0
+		AND me.status = 0
+		LIMIT #{offSet},#{rows}
+	</select>
+
+	<select id="count" resultType="int" parameterType="permission">
+		SELECT
+		count(permissionId) FROM
+		`dounine_admin_rbac_permission`
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<select id="countA" resultType="int" parameterType="user">
+		select
+		count(1) from dounine_admin_rbac_permission as p
+		right JOIN dounine_admin_rbac_role_permission as r
+		ON p.permissionId = r.permissionId where r.roleId in
+		(select roleId from dounine_admin_rbac_user_role where
+		userId in (select userId from dounine_admin_rbac_user where
+		userName=#{userName}))
+	</select>
+
+	<delete id="delete" parameterType="permission">
+		delete from
+		<include refid="table_name" />
+		where permissionId = #{permissionId}
+	</delete>
+
+	<update id="congeal" parameterType="permission">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`permissionId`=#{permissionId}
+	</update>
+
+	<update id="thaw" parameterType="permission">
+		UPDATE
+		<include refid="table_name" />
+		SET
+		status = #{status}
+		WHERE
+		`permissionId`=#{permissionId}
+	</update>
+
+</mapper>

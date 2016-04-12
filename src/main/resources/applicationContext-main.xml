@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">  
+	 <!-- 注解支撑 -->
+	<context:annotation-config />
+	
+	<!-- 启动组件扫描，排除@Controller组件，该组件由SpringMVC配置文件扫描 -->
+	<context:component-scan base-package="com.dounine" >
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+				<value>classpath:mail.properties</value>
+				<value>classpath:config.properties</value>
+				<value>classpath:redis.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- aop监控所有操作 -->
+	<bean id="operationLog" class="com.dounine.interceptor.OperationInterceptor"/>
+	<aop:config>
+		<aop:aspect id="logAspect" ref="operationLog">	
+			<aop:pointcut id="operatorService" expression="execution(* com.dounine.service..*.*(..))" /> 
+			<aop:around method="doAround" pointcut-ref="operatorService" />
+			<aop:after-throwing method="throMethod" throwing="ex" pointcut-ref="operatorService"/>
+		</aop:aspect>
+	</aop:config>
+	
+	<!-- 数据库连接池c3p0配置 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="user" value="${db.username}"/>
+		<property name="password" value="${db.password}"/>
+		<property name="jdbcUrl" value="${db.url}"></property>
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="maxPoolSize" value="40"></property>
+		<property name="minPoolSize" value="10"></property>
+		<property name="initialPoolSize" value="10"></property>
+		<property name="maxIdleTime" value="60"></property>
+		<property name="idleConnectionTestPeriod" value="360" /> 
+  		<property name="preferredTestQuery" value="select 1" />   
+		<property name="acquireIncrement" value="5" />   
+		<property name="acquireRetryAttempts" value="50" />   
+        <property name="acquireRetryDelay" value="1000" />   
+        <property name="breakAfterAcquireFailure" value="true" />   
+   		<property name="autoCommitOnClose" value="false" />   
+        <property name="testConnectionOnCheckout" value="true" />      
+        <property name="maxStatements" value="100" /> 
+        <property name="maxStatementsPerConnection" value="5" />
+	</bean>
+	
+	<!-- 创建SqlSessionFactory，同时指定数据源， 通过org.mybatis.spring.SqlSessionFactoryBean产生sqlSessionFactory对象 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" value="#{dataSource}"/>
+		<property name="mapperLocations" value="classpath:com/dounine/maps/**/*Mapper.xml" />  
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        <property name="typeAliasesPackage" value="com.dounine.domain" />
+	</bean>
+	
+	<!-- Mapper接口所在包名，Spring会自动查找其下的Mapper -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+      <property name="basePackage" value="com.dounine.mapper" />  
+    </bean>
+	
+	<!-- 数据库会话(非单例) -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+		<constructor-arg index="0" value="#{sqlSessionFactory}"/>
+	</bean>
+	
+	<!-- 开启事务注解驱动 -->  
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    
+    <!-- IOC bean前后置处理器 -->
+    <bean class="com.dounine.interceptor.DounineBeanPostProcessor" />
+	
+	<!-- 事务管理器配置 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" value="#{dataSource}"/>
+	</bean>
+	
+	<!-- 配置事务异常封装 -->
+    <bean id="persistenceExceptionTranslationPostProcessor" 
+       class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+</beans>
