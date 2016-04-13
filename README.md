@@ -33,6 +33,3 @@
 &nbsp;&nbsp;&nbsp;&nbsp; **4**. 启动Redis缓存服务器<br/>
 &nbsp;&nbsp;&nbsp;&nbsp; **5**. `mvn clean package`<br/>
 &nbsp;&nbsp;&nbsp;&nbsp; **6**. 生成/target/dounine-frame.war<br/>
-<h2>项目交流</h2>
-
-&nbsp;&nbsp;&nbsp;&nbsp;项目问题交流群： **174481989** <br/></br/></br/>
