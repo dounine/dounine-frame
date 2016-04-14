@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <organization>
-	<name>dounine-frame(逗你呢框架管理系统)</name>
-	<url>http://dounine.com</url>
+	<name>dounine-frame 分布式集群项目</name>
+	<url>https://github.com/dounine/dounine-frame</url>
   </organization>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.dounine</groupId>
   <artifactId>dounine-frame</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>dounine-frame(逗你呢框架管理系统)</name>
+  <name>dounine-frame 分布式集群项目</name>
   <url>http://maven.apache.org</url>
   
   <licenses>
