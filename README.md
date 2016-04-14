@@ -2,15 +2,16 @@
 ====
 环境配置
 ====
+* 如下工具需要自行下载
+ * 1. eclipse等(IDE)
+ * 2： jdk7
+ * 3： git
+ * 4： maven3.0
+ * 5： tomcat7.0
+ * 6： mysql5.5
+ * 7： redis (配带windows)
+ * 8： nginx (配带)
 
-**1**： eclipse等(IDE)<br/>
-**2**： jdk7<br/>
-**3**： git<br/>
-**4**： maven<br/>
-**5**： tomcat7.0<br/>
-**6**： mysql<br/>
-**7**： redis (配带windows)<br/>
-**8**： nginx (配带)<br/>
 部署开发环境
 ===
 * 方式一:使用 **Eclipse**
