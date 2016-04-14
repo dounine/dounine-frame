@@ -27,7 +27,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp; **4**. 等待项目的下载...<br/>
 
 <h2>项目部署</h2>
-&nbsp;&nbsp;&nbsp;&nbsp; **1**. 导入 `/instruction/sql/install.sql` 数据库脚本<br/><br/>
+&nbsp;&nbsp;&nbsp;&nbsp; **1**. 导入 `/instruction/sql/install.sql` 数据库脚本<br/>
 &nbsp;&nbsp;&nbsp;&nbsp; **2**. 修改 `/src/main/resources/jdbc.properties` 里的数据库链接、用户名和密码为生产环境的值<br/>
 &nbsp;&nbsp;&nbsp;&nbsp; **3**. 修改 `/src/main/resources/redis.properties` 里的redis、用户名和密码为生产环境的值(默认不用)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp; **4**. 如需配置会话共享(集群),请参照 `/instruction/tools/tomcat7集群/readme.txt` 里面的说明来完成操作<br/>
