@@ -24,7 +24,11 @@
 * 方式二:使用 **Git**
   * 下载地址 [git]( http://msysgit.github.io/ )
   * 使用 `git` 克隆 `dounine-frame` 项目
-  * `bash: git clone https://github.com/dounine/dounine-frame.git`
+ 
+  ```shell
+  git clone https://github.com/dounine/dounine-frame.git
+  ```
+  
   * 继续等待漫长的下载过程吧....
 
 项目部署
