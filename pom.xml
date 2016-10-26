@@ -9,7 +9,7 @@
   <artifactId>dounine-frame</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>dounine-frame 分布式集群项目</name>
+  <name>dounine-frame分布式集群项目</name>
   <url>http://maven.apache.org</url>
   
   <licenses>
