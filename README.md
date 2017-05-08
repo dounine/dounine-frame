@@ -1,6 +1,6 @@
-#dounine-frame 分布式集群项目
+# dounine-frame 分布式集群项目
 
-##环境配置
+## 环境配置
 
 * 如下工具需要自行下载
  * eclipse等(IDE)
@@ -12,7 +12,7 @@
  * redis (配带windows)
  * nginx (配带)
 
-##部署开发环境
+## 部署开发环境
 
 * 方式一:使用 **Eclipse**
   * 下载地址 [Eclipse IDE for Java EE Developers]( http://eclipse.org/downloads/ )(带git的版本)
@@ -31,7 +31,7 @@
   
   * 继续等待漫长的下载过程吧....
 
-##项目部署
+## 项目部署
 
 * 步骤如下:
   * 导入 `/instruction/sql/install.sql` 数据库脚本
